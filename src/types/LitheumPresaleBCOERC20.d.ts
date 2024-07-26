@@ -46,6 +46,10 @@ interface LitheumPresaleBCOERC20Interface extends Interface {
       encode([usdtAmount]: [BigNumberish]): string;
     }>;
 
+    getEstimatedUsdtAmount: TypedFunctionDescription<{
+      encode([tokenAmount]: [BigNumberish]): string;
+    }>;
+
     getUSDTBalance: TypedFunctionDescription<{ encode([]: []): string }>;
 
     isConvertible: TypedFunctionDescription<{ encode([]: []): string }>;
@@ -164,6 +168,8 @@ export class LitheumPresaleBCOERC20 extends Contract {
 
     getEstimatedSwapAmount(usdtAmount: BigNumberish): Promise<BigNumber>;
 
+    getEstimatedUsdtAmount(tokenAmount: BigNumberish): Promise<BigNumber>;
+
     getUSDTBalance(): Promise<BigNumber>;
 
     isConvertible(): Promise<boolean>;
@@ -246,6 +252,8 @@ export class LitheumPresaleBCOERC20 extends Contract {
   getCurrentPrice(): Promise<BigNumber>;
 
   getEstimatedSwapAmount(usdtAmount: BigNumberish): Promise<BigNumber>;
+
+  getEstimatedUsdtAmount(tokenAmount: BigNumberish): Promise<BigNumber>;
 
   getUSDTBalance(): Promise<BigNumber>;
 
@@ -332,6 +340,8 @@ export class LitheumPresaleBCOERC20 extends Contract {
     getCurrentPrice(): Promise<BigNumber>;
 
     getEstimatedSwapAmount(usdtAmount: BigNumberish): Promise<BigNumber>;
+
+    getEstimatedUsdtAmount(tokenAmount: BigNumberish): Promise<BigNumber>;
 
     getUSDTBalance(): Promise<BigNumber>;
 

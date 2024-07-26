@@ -48,7 +48,9 @@ interface LitheumPrivateBCOERC20Interface extends Interface {
 
     getUSDTBalance: TypedFunctionDescription<{ encode([]: []): string }>;
 
-    getWhitelist: TypedFunctionDescription<{ encode([]: []): string }>;
+    getWhitelistWithLimit: TypedFunctionDescription<{
+      encode([address_]: [string]): string;
+    }>;
 
     isAddressInWhitelist: TypedFunctionDescription<{
       encode([_address]: [string]): string;
@@ -59,6 +61,10 @@ interface LitheumPrivateBCOERC20Interface extends Interface {
     isOwner: TypedFunctionDescription<{ encode([]: []): string }>;
 
     launchSAFT: TypedFunctionDescription<{ encode([]: []): string }>;
+
+    modifyLimit: TypedFunctionDescription<{
+      encode([_address, limit]: [string, BigNumberish]): string;
+    }>;
 
     name: TypedFunctionDescription<{ encode([]: []): string }>;
 
@@ -172,7 +178,7 @@ export class LitheumPrivateBCOERC20 extends Contract {
 
     getUSDTBalance(): Promise<BigNumber>;
 
-    getWhitelist(): Promise<string[]>;
+    getWhitelistWithLimit(address_: string): Promise<BigNumber>;
 
     isAddressInWhitelist(_address: string): Promise<boolean>;
 
@@ -181,6 +187,12 @@ export class LitheumPrivateBCOERC20 extends Contract {
     isOwner(): Promise<boolean>;
 
     launchSAFT(overrides?: TransactionOverrides): Promise<ContractTransaction>;
+
+    modifyLimit(
+      _address: string,
+      limit: BigNumberish,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
 
     name(): Promise<string>;
 
@@ -264,7 +276,7 @@ export class LitheumPrivateBCOERC20 extends Contract {
 
   getUSDTBalance(): Promise<BigNumber>;
 
-  getWhitelist(): Promise<string[]>;
+  getWhitelistWithLimit(address_: string): Promise<BigNumber>;
 
   isAddressInWhitelist(_address: string): Promise<boolean>;
 
@@ -273,6 +285,12 @@ export class LitheumPrivateBCOERC20 extends Contract {
   isOwner(): Promise<boolean>;
 
   launchSAFT(overrides?: TransactionOverrides): Promise<ContractTransaction>;
+
+  modifyLimit(
+    _address: string,
+    limit: BigNumberish,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
 
   name(): Promise<string>;
 
@@ -355,7 +373,7 @@ export class LitheumPrivateBCOERC20 extends Contract {
 
     getUSDTBalance(): Promise<BigNumber>;
 
-    getWhitelist(): Promise<BigNumber>;
+    getWhitelistWithLimit(address_: string): Promise<BigNumber>;
 
     isAddressInWhitelist(_address: string): Promise<BigNumber>;
 
@@ -364,6 +382,8 @@ export class LitheumPrivateBCOERC20 extends Contract {
     isOwner(): Promise<BigNumber>;
 
     launchSAFT(): Promise<BigNumber>;
+
+    modifyLimit(_address: string, limit: BigNumberish): Promise<BigNumber>;
 
     name(): Promise<BigNumber>;
 

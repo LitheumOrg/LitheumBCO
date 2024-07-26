@@ -3,18 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../../public/css/global.css" />
     <link rel="stylesheet" href="./index.css" />
     <title>Pre Bco</title>
   </head>
+
   <body>
-    <div class="popup-bg">
-      <div class="editing-popup">
-        <div class="close-icon">
-          <img src="../assets/close-icon.svg" alt="Close" />
-        </div>
+    <div class="popup-bg" id="popup-bg">
+      <div class="token-popup" id="token-popup">
+        <button class="close-icon" id="close-token-popup">
+          <img src="../../public/assets/close-icon.svg" alt="Close" />
+        </button>
         <p class="title">TOKEN RELEASE CURVE</p>
-        <img src="../assets/token-count-graph.svg" class="graph" alt="Graph" />
+        <img
+          src="../../public/assets/token-count-graph.svg"
+          class="graph"
+          alt="Graph"
+        />
         <p class="fee">
           *a 2% fee for all swaps is collected by Litheum Labs + Gas
         </p>
@@ -37,9 +42,15 @@
             <div class="prize-box">
               <div class="total-supply">
                 <div class="align">
-                  <img src="../assets/supply-line-1.svg" alt="Supply Line" />
+                  <img
+                    src="../../public/assets/supply-line-1.svg"
+                    alt="Supply Line"
+                  />
                   <p class="text-blth">500M BLTH</p>
-                  <img src="../assets/supply-line-2.svg" alt="Supply Line" />
+                  <img
+                    src="../../public/assets/supply-line-2.svg"
+                    alt="Supply Line"
+                  />
                 </div>
                 <p class="text-supply">Total Supply</p>
               </div>
@@ -61,15 +72,49 @@
               </div>
             </div>
           </div>
-          <p class="detail">(Details)</p>
+          <button class="detail-btn" onclick="handleOpenTokenPopup()">
+            <p class="detail">(Details)</p>
+          </button>
         </div>
       </div>
+
       <div class="box-container">
         <div class="box">
+          <div class="editing-popup-slippage" id="editing-popup-slippage">
+            <div class="percentage">
+              <p>0.0 %</p>
+            </div>
+            <div class="percentage">
+              <p>0.5 %</p>
+            </div>
+            <div class="percentage">
+              <p>1.0 %</p>
+            </div>
+            <div class="percentage">
+              <p>1.5 %</p>
+            </div>
+            <div class="percentage">
+              <p>2.0 %</p>
+            </div>
+            <div class="percentage">
+              <p>2.5 %</p>
+            </div>
+            <div class="percentage">
+              <p>3.0 %</p>
+            </div>
+            <div class="btn-container">
+              <p class="lost-fee">
+                *a lower slippage may result in revert() and lost gas fee
+              </p>
+              <button class="close-btn" onclick="handleCloseDetailsPopup()">
+                <p>Close</p>
+              </button>
+            </div>
+          </div>
           <div class="boxes">
-            <div class="currency-box">
+            <div class="currency-box" id="currency-box">
               <div class="first-content">
-                <p class="paid">you send*:</p>
+                <p class="paid" id="usdt-paid">you send*:</p>
                 <p class="amount">887.4</p>
                 <p class="max">
                   Max Slippage: 2% <span class="edit">(edit)</span>
@@ -83,30 +128,43 @@
                 <p class="balance">BALANCE: 10000 USDT</p>
               </div>
             </div>
-            <div class="arrow">
-              <img src="../assets/arrow-down.svg" alt="Arrow" />
-            </div>
+            <button class="arrow" onclick="swap()">
+              <img
+                src="../assets/arrow-down.svg"
+                id="arrow-img"
+                alt="Arrow"
+              />
+            </button>
             <div class="currency-box">
               <div class="first-content">
-                <p class="paid">TOTAL AVAILABLE FOR YOU:</p>
+                <p class="paid" id="blth-paid">TOTAL AVAILABLE FOR YOU:</p>
                 <p class="amount blth">10000</p>
               </div>
               <div class="second-content">
                 <div class="currency">
-                  <img src="../assets/litheum-icon.svg" alt="Litheum" />
+                  <img
+                    src="../assets/litheum-icon.svg"
+                    alt="Litheum"
+                  />
                   <p>BLTH</p>
                 </div>
                 <p class="balance">BALANCE: 0 LTH</p>
               </div>
             </div>
           </div>
-          <button class="swap-btn">SWAP</button>
+          <button class="swap-btn" onclick="swap()">SWAP</button>
         </div>
         <div class="info">
           <p class="tax">*includes 2% fee + gas</p>
-          <p class="detail">(Details)</p>
+          <button class="details-popup-btn" onclick="handleOpenDetailsPopup()">
+            <p class="detail">(Details)</p>
+          </button>
         </div>
       </div>
     </div>
+
+    <script src="./index.js"></script>
+    <!-- <script src="script.js" type="text/javascript"></script>
+    <script src="main.js" type="module"></script> -->
   </body>
 </html>

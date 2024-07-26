@@ -1,62 +1,3 @@
-.popup-bg {
-  position: fixed;
-  z-index: 999;
-  height: 100vh;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.editing-popup {
-  width: 617.174px;
-  flex-shrink: 0;
-  border-radius: 33px;
-  border: 0.7px solid rgba(122, 125, 61, 0.5);
-  background: rgba(27, 27, 27, 0.7);
-  backdrop-filter: blur(13.399999618530273px);
-  padding: 65px 90px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.editing-popup .close-icon {
-  position: absolute;
-  top: 22px;
-  right: 22px;
-}
-
-.editing-popup .title {
-  color: var(--Beige);
-  font-family: "Litheum Title";
-  font-size: 34.043px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 110%; /* 37.447px */
-  margin-bottom: 31.88px;
-}
-
-.editing-popup .graph {
-  width: 378.098px;
-  height: 395.836px;
-}
-
-.editing-popup .fee {
-  color: var(--Beige);
-  font-family: "Litheum Text";
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 110%; /* 11px */
-  letter-spacing: 0.4px;
-  margin-top: 32.08px;
-  text-align: center;
-}
-
 .container {
   height: 100vh;
   max-width: 1440px;
@@ -156,6 +97,10 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
+}
+
+.prize-box-container .prize-box .total-supply .align img {
+  width: 100%;
 }
 
 .prize-box-container .prize-box .total-supply .text-supply {
@@ -317,6 +262,10 @@
   line-height: 110%; /* 11px */
   letter-spacing: 0.4px;
   text-decoration-line: underline;
+}
+
+.container .bonding .detail-btn {
+  width: 100%;
 }
 
 .container .bonding .detail {
@@ -483,42 +432,16 @@
   transition: all 0.5s;
 }
 
+.box .swap-btn:disabled {
+  background: #7a7d3d;
+  color: #525229;
+}
+
 .box .swap-btn:hover {
   background: #c5c3ae;
 }
 
 @media screen and (max-width: 1084px) {
-  .editing-popup {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 75%;
-    padding: 28px 40px;
-    border-radius: 14.614px;
-    max-width: 273.311px;
-  }
-  .editing-popup .close-icon {
-    top: 12px;
-    right: 12px;
-  }
-  .editing-popup .close-icon img {
-    width: 11.292px;
-    height: 11.292px;
-  }
-  .editing-popup .title {
-    font-size: 14px;
-    margin-bottom: 13.5px;
-    margin-top: 10px;
-  }
-  .editing-popup .graph {
-    width: 167.438px;
-    height: 175.293px;
-  }
-  .editing-popup .fee {
-    font-size: 8px;
-    margin-top: 13.18px;
-  }
   .container {
     flex-direction: column;
     height: 100%;
@@ -533,7 +456,6 @@
   }
   .box {
     width: 100%;
-    position: unset;
   }
   .box .currency-box .first-content .paid {
     font-size: 8px;
@@ -564,4 +486,136 @@
   .box-container .info {
     width: 100%;
   }
+}
+
+.popup-bg {
+  position: fixed;
+  z-index: 999;
+  height: 100vh;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.editing-popup-slippage {
+  position: absolute;
+  z-index: 9999;
+  display: flex;
+  width: 441px;
+  padding: 9px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  border-radius: 16px;
+  background: var(--White);
+  top: 30%;
+  left: 10%;
+  display: none;
+}
+
+.editing-popup-slippage .percentage {
+  display: flex;
+  height: 32.566px;
+  padding: 7px 33px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 8px;
+  background: rgba(122, 125, 61, 0.3);
+}
+
+.editing-popup-slippage .percentage p {
+  color: var(--Black);
+
+  /* NAV/Nav Link */
+  font-family: "Litheum Title";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 16.8px */
+  letter-spacing: 0.42px;
+  text-transform: uppercase;
+}
+
+.editing-popup-slippage .lost-fee {
+  color: var(--Black);
+  font-family: "Litheum Text";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 18px */
+  margin-bottom: 18px;
+}
+
+.editing-popup-slippage .btn-container {
+  width: 100%;
+}
+
+.editing-popup-slippage .close-btn {
+  background: transparent;
+  border: none;
+  margin: auto;
+  width: 100%;
+}
+
+.editing-popup-slippage .close-btn p {
+  color: var(--Black);
+  font-family: "Litheum Title";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 110%; /* 13.2px */
+  letter-spacing: 0.48px;
+  text-transform: uppercase;
+}
+
+.token-popup {
+  width: 617.174px;
+  flex-shrink: 0;
+  border-radius: 33px;
+  border: 0.7px solid rgba(122, 125, 61, 0.5);
+  background: rgba(27, 27, 27, 0.7);
+  backdrop-filter: blur(13.399999618530273px);
+  padding: 65px 90px;
+  position: relative;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.token-popup .close-icon {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+}
+
+.token-popup .title {
+  color: var(--Beige);
+  font-family: "Litheum Title";
+  font-size: 34.043px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 110%; /* 37.447px */
+  margin-bottom: 31.88px;
+}
+
+.token-popup .graph {
+  width: 378.098px;
+  height: 395.836px;
+}
+
+.token-popup .fee {
+  color: var(--Beige);
+  font-family: "Litheum Text";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 110%; /* 11px */
+  letter-spacing: 0.4px;
+  margin-top: 32.08px;
+  text-align: center;
 }
