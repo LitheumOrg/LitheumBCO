@@ -8,6 +8,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         private: resolve(__dirname, 'private/index.html'),
+        admin: resolve(__dirname, 'admin/index.html'),
       },
     },
   },
