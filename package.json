@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "typechain": "typechain --target ethers --outDir src/types 'src/contracts/**/*.json'"
+    "postinstall": "typechain --target ethers --outDir src/types 'src/contracts/**/*.json'"
   },
   "devDependencies": {
     "typechain": "^1.0.5",

@@ -2,8 +2,8 @@ import './main.css'
 import './global.d.ts'
 
 import { ContractTransactionResponse, ethers } from 'ethers';
-import { MockUSDTToken as IMockUSDT } from "./types/MockUSDTToken";
-import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "./types/LitheumPresaleBCOERC20";
+import { MockUSDTToken as IMockUSDT } from "../types/MockUSDTToken.ts";
+import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/LitheumPresaleBCOERC20";
 
 import CONTRACT_ADDRESS from './constants';
 import LitheumPresaleBCOERC20 from './contracts/LitheumPresaleBCOERC20.sol/LitheumPresaleBCOERC20.json';
