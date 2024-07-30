@@ -3,6 +3,8 @@
 ## Deployment
 
 ```shell
+npm i
+npm run generate-types
 npm run build
 ```
 

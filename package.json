@@ -7,17 +7,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "postinstall": "typechain --target ethers --outDir src/types 'src/contracts/**/*.json'"
+    "generate-types": "typechain --target=ethers-v6 'src/contracts/**/*.json'"
   },
   "devDependencies": {
-    "typechain": "^1.0.5",
-    "typechain-target-ethers": "^1.0.4",
     "typescript": "^5.2.2",
     "vite": "^5.3.4"
   },
   "dependencies": {
+    "@typechain/ethers-v6": "^0.5.1",
     "@types/node": "^20.14.11",
     "@web3modal/ethers": "^5.0.7",
-    "ethers": "^6.13.1"
+    "ethers": "^6.13.1",
+    "typechain": "^8.3.2"
   }
 }

@@ -2,8 +2,8 @@ import './main.css'
 import './global.d.ts'
 
 import { ContractTransactionResponse, ethers } from 'ethers';
-import { MockUSDTToken as IMockUSDT } from "../types/MockUSDTToken.ts";
-import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/LitheumPresaleBCOERC20";
+import { MockUSDTToken as IMockUSDT } from "../types/ethers-contracts/MockUSDTToken.ts";
+import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/ethers-contracts/LitheumPresaleBCOERC20";
 
 import CONTRACT_ADDRESS from './constants';
 import LitheumPresaleBCOERC20 from './contracts/LitheumPresaleBCOERC20.sol/LitheumPresaleBCOERC20.json';
@@ -111,8 +111,8 @@ const blthInput = document.getElementById('blth-input') as HTMLButtonElement;
 blthInput.disabled = true;
 const usdtInput = document.getElementById('usdt-input') as HTMLButtonElement;
 
-let blthAmountInWei = 0;
-let usdtAmountInWei = 0;
+let blthAmountInWei: any;
+let usdtAmountInWei: any;
 let slippage = '2';
 
 const updateAvailableBlth = async () => {

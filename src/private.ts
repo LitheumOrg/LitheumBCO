@@ -2,8 +2,8 @@ import './main.css'
 import './global.d.ts'
 
 import { ContractTransactionResponse, ethers } from 'ethers';
-import { MockUSDTToken as IMockUSDT } from "../types/MockUSDTToken.ts";
-import { LitheumPrivateBCOERC20 as ILitheumPrivateBCOERC20 } from "../types/LitheumPrivateBCOERC20";
+import { MockUSDTToken as IMockUSDT } from "../types/ethers-contracts/MockUSDTToken.ts";
+import { LitheumPrivateBCOERC20 as ILitheumPrivateBCOERC20 } from "../types/ethers-contracts/LitheumPrivateBCOERC20";
 
 import CONTRACT_ADDRESS from './constants';
 import LitheumPrivateBCOERC20 from  './contracts/LitheumPrivateBCOERC20.sol/LitheumPrivateBCOERC20.json';
@@ -87,7 +87,7 @@ const plthInput = document.getElementById('plth-input') as HTMLButtonElement;
 plthInput.disabled = true;
 const usdtInput = document.getElementById('usdt-input') as HTMLButtonElement;
 
-let plthAmountInWei = 0;
+let plthAmountInWei: any;
 // let usdtAmountInWei = 0;
 // let slippage = '2';
 
