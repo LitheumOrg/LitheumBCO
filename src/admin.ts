@@ -5,20 +5,24 @@ import modal from './walletConnect.ts';
 import { ContractTransactionResponse, ethers } from 'ethers';
 import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/ethers-contracts/LitheumPresaleBCOERC20";
 import { LitheumPrivateBCOERC20 as ILitheumPrivateBCOERC20 } from "../types/ethers-contracts/LitheumPrivateBCOERC20";
+import { LitheumERC20 as ILitheumERC20 } from "../types/ethers-contracts/LitheumERC20";
 
 import CONTRACT_ADDRESS from './constants';
 import LitheumPresaleBCOERC20 from  './contracts/LitheumPresaleBCOERC20.sol/LitheumPresaleBCOERC20.json';
 import LitheumPrivateBCOERC20 from './contracts/LitheumPrivateBCOERC20.sol/LitheumPrivateBCOERC20.json';
+import LitheumERC20 from './contracts/LitheumERC20.sol/LitheumERC20.json';
 
 
 let provider: ethers.BrowserProvider;
 let blthContract: ILitheumPresaleBCOERC20;
 let plthContract: ILitheumPrivateBCOERC20;
+let wlthContract: ILitheumERC20;
 if (window.ethereum) {
     // provider = new ethers.JsonRpcProvider('https://rpc-sepolia.rockx.com');
     provider = new ethers.BrowserProvider(window.ethereum);
     blthContract = new ethers.Contract(CONTRACT_ADDRESS.BLTH, LitheumPresaleBCOERC20.abi, provider) as unknown as ILitheumPresaleBCOERC20;
     plthContract = new ethers.Contract(CONTRACT_ADDRESS.PLTH, LitheumPrivateBCOERC20.abi, provider) as unknown as ILitheumPrivateBCOERC20;
+    wlthContract = new ethers.Contract(CONTRACT_ADDRESS.WLTH, LitheumERC20.abi, provider) as unknown as ILitheumERC20;
 }
 
 // let accounts: String[] = [];
@@ -54,6 +58,8 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
 /**
  * setLitheumERC20TokenAddress - Private
  * setLitheumERC20TokenAddress - presale
+ * setTokenAddress - Private
+ * setTokenAddress - presale
  *  - address
  *  - dropdown
  *  - button
@@ -213,3 +219,28 @@ const removeFromWhitelist = async () => {
 }
 
 removeFromWhitelistBtn?.addEventListener('click', removeFromWhitelist);
+
+const setTokenAddressBtn = document.getElementById('set-address-btn') as HTMLButtonElement;
+const setTokenAddress = async () => {
+    const tokenAddress = (document.getElementById('token-address') as HTMLInputElement).value;
+    const bcoOffering = (document.getElementById('bco-select-token') as HTMLSelectElement).value;
+
+    if (tokenAddress && bcoOffering) {
+        const signer = await provider.getSigner();
+        const wlthContractSigned = wlthContract.connect(signer);
+        if (bcoOffering === 'blth') {
+            const tx = await wlthContractSigned.setLitheumPresaleBCOERC20Address(tokenAddress) as ContractTransactionResponse;
+            await tx.wait();
+
+        } else if (bcoOffering === 'plth') {
+            const tx = await wlthContractSigned.setLitheumPrivateBCOERC20Address(tokenAddress) as ContractTransactionResponse;
+            await tx.wait();
+        }
+
+        setTokenAddressBtn.innerText = 'Set Token Address';
+    } else {
+        setTokenAddressBtn.innerText = 'Please enter a valid address';
+    }
+}
+
+setTokenAddressBtn?.addEventListener('click', setTokenAddress);

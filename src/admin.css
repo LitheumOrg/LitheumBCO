@@ -30,7 +30,7 @@ body {
     align-items: flex-start;
     gap: 8px;
     justify-content: center;
-    width: 33.33%;
+    width: 25%;
     height: 50%;
     border: 1px solid #000;
     /* Optional: for visual distinction */
@@ -124,7 +124,7 @@ body {
     width: 100%;
 
     font-family: "Litheum Title";
-  font-size: 28px;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: 110%; /* 30.8px */
