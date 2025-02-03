@@ -288,7 +288,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  width: 561.203px;
+  /* width: 561.203px; */
   justify-content: center;
   position: relative;
 }

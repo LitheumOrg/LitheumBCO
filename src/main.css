@@ -234,6 +234,19 @@
   flex-direction: column;
 }
 
+.container .box-container-one {
+  background: var(--Black);
+}
+
+.container .box-container-two {
+  row-gap: 100px;
+}
+
+.box-container .box-one {
+  border: #c5c3ae;
+  row-gap: 100px;
+}
+
 .box-container .info {
   width: 100%;
   display: flex;
@@ -317,7 +330,7 @@
 }
 
 .box .currency-box {
-  display: flex;
+  /* display: flex; */
   padding: 24px;
   justify-content: space-between;
   align-items: flex-end;
@@ -418,6 +431,7 @@
   font-weight: 400;
   line-height: 110%; /* 11px */
   letter-spacing: 0.4px;
+  width: 100%;
 }
 
 .box .swap-btn {
@@ -631,4 +645,54 @@
   letter-spacing: 0.4px;
   margin-top: 32.08px;
   text-align: center;
+}
+.popup-bg {
+  position: fixed;
+  z-index: 999;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.connect-wallet-btn {
+  display: flex;
+  height: 80px;
+  padding: 8px 14px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  align-self: stretch;
+  border-radius: 16px;
+  background: var(--Yellow);
+  color: #000;
+  text-align: center;
+  cursor: pointer;
+
+  /* Sub-header mob */
+  font-family: "Litheum Title";
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 110%;
+  /* 30.8px */
+  transition: all 0.5s;
+}
+
+.connect-wallet-btn:hover {
+  background: #c5c3ae;
+}
+
+.popup-title {
+  color: var(--Yellow);
+  font-family: "Litheum Title";
+  font-size: 34.043px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 110%;
+  /* 37.447px */
+  margin-bottom: 31.88px;
 }

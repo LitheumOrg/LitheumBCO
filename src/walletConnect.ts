@@ -29,6 +29,14 @@ const polygon = {
     rpcUrl: 'https://polygon-rpc.com/'
 }
 
+const litheum = {
+    chainId: 137,
+    name: 'Litheum Test Network',
+    currency: 'LTH',
+    // explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'http://localhost:8001/'
+}
+
 // 3. Create your application's metadata object
 const metadata = {
   name: 'Sepolia Litheum BCO',
