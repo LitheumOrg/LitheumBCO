@@ -138,14 +138,20 @@ ipPortBtn?.addEventListener('click', async () => {
     }
 });
 
-const unstakingAmountInput = document.getElementById('staking-amount-input') as HTMLButtonElement;
+const unstakingAmountInput = document.getElementById('unstake-amount-input') as HTMLButtonElement;
 
 unstakeBtn?.addEventListener('click', async () => {
-    let signer = await provider.getSigner();
+    if (stakingTableContract && accounts.length) {
+        if (!stakingAmountInput.value || !ipAddressInput.value || !portInput.value) {
+            alert('Please fill all the fields');
+            return;
+        }
+        let signer = await provider.getSigner();
 
-    const stakingTableContractSigned = stakingTableContract.connect(signer);
+        const stakingTableContractSigned = stakingTableContract.connect(signer);
 
-    await stakingTableContractSigned.unstake(unstakingAmountInput.value);
+        await stakingTableContractSigned.unstake(unstakingAmountInput.value);
 
-    await checkCurrentStakeStatus(accounts[0] as string);
+        await checkCurrentStakeStatus(accounts[0] as string);
+    }
 });
