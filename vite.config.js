@@ -9,7 +9,7 @@ export default defineConfig({
         // main: resolve(__dirname, 'index.html'),
         // private: resolve(__dirname, 'private/index.html'),
         // admin: resolve(__dirname, 'admin/index.html'),
-        main: resolve(__dirname, 'stake/index.html'),
+        main: resolve(__dirname, 'index.html'),
         status: resolve(__dirname, 'status/index.html'),
       },
     },
