@@ -33,8 +33,8 @@ const litheum = {
     chainId: 137,
     name: 'Litheum Test Network',
     currency: 'LTH',
-    // explorerUrl: 'https://polygonscan.com/',
-    rpcUrl: 'http://localhost:8001/'
+    explorerUrl: 'https://explorer.litheum.com/',
+    rpcUrl: 'https://testnet.litheum.com/'
 }
 
 // 3. Create your application's metadata object
@@ -61,7 +61,7 @@ const ethersConfig = defaultConfig({
 // 5. Create a Web3Modal instance
 const modal = createWeb3Modal({
   ethersConfig,
-  chains: [sepolia, polygon, mainnet],
+  chains: [sepolia, polygon, mainnet, litheum],
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
   enableOnramp: true // Optional - false as default
