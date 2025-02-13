@@ -45,9 +45,44 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
 
             await provider.getNetwork();
 
-        } catch (e) {
+        } catch (e: any) {
             console.error("Failed to switch chain:", e);
-            return;
+            if (e.code === 4902) {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [
+                      {
+                        chainId,
+                        chainName: "Litheum Test Network",
+                        nativeCurrency: {
+                          name: "Lith",
+                          symbol: "LTH",
+                          decimals: 18
+                        },
+                        rpcUrls: ["https://testnet.litheum.com"],
+                        blockExplorerUrls: ["https://explorer.litheum.com"]
+                      }
+                    ]
+                });
+
+                try {
+                    // Request to switch to the desired network
+                    await window.ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: chainId }],
+                    });
+                    console.log(`Switched to chainId: ${chainId}`);
+
+                    provider = new ethers.BrowserProvider(window.ethereum)
+
+                    await provider.getNetwork();
+                } catch (e: any) {
+                    console.error("Failed to switch chain:", e);
+                    return;
+                }
+            } else {
+                return;
+            }
         }
     }
 
@@ -114,6 +149,10 @@ stakeBtn?.addEventListener('click', async () => {
         });
 
         await checkCurrentStakeStatus(accounts[0] as string);
+
+        stakingAmountInput.value = ``;
+        ipAddressInput.value = ``;
+        portInput.value = ``;
     }
 });
 
@@ -135,6 +174,9 @@ ipPortBtn?.addEventListener('click', async () => {
         await stakingTableContractSigned.setIpAndPort(ipAddressUpdateInput.value, portUpdateInput.value);
 
         await checkCurrentStakeStatus(accounts[0] as string);
+
+        ipAddressUpdateInput.value = ``;
+        portUpdateInput.value = ``;
     }
 });
 
@@ -142,7 +184,7 @@ const unstakingAmountInput = document.getElementById('unstake-amount-input') as 
 
 unstakeBtn?.addEventListener('click', async () => {
     if (stakingTableContract && accounts.length) {
-        if (!stakingAmountInput.value || !ipAddressInput.value || !portInput.value) {
+        if (!unstakingAmountInput.value) {
             alert('Please fill all the fields');
             return;
         }
@@ -150,8 +192,10 @@ unstakeBtn?.addEventListener('click', async () => {
 
         const stakingTableContractSigned = stakingTableContract.connect(signer);
 
-        await stakingTableContractSigned.unstake(unstakingAmountInput.value);
+        await stakingTableContractSigned.unstake(ethers.parseEther(unstakingAmountInput.value));
 
         await checkCurrentStakeStatus(accounts[0] as string);
+
+        unstakingAmountInput.value = ``;
     }
 });
