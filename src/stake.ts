@@ -42,6 +42,7 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
             console.log(`Switched to chainId: ${chainId}`);
 
             provider = new ethers.BrowserProvider(window.ethereum)
+            stakingTableContract = new ethers.Contract(CONTRACT_ADDRESS.STAKING_TABLE, StakingTable.abi, provider) as unknown as IStakingTable;
 
             await provider.getNetwork();
 
@@ -74,6 +75,7 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
                     console.log(`Switched to chainId: ${chainId}`);
 
                     provider = new ethers.BrowserProvider(window.ethereum)
+                    stakingTableContract = new ethers.Contract(CONTRACT_ADDRESS.STAKING_TABLE, StakingTable.abi, provider) as unknown as IStakingTable;
 
                     await provider.getNetwork();
                 } catch (e: any) {
@@ -123,7 +125,7 @@ const checkCurrentStakeStatus = async (address: string) => {
         updateBox.style.display = 'flex';
         unstakeBtn.disabled = false;
     } catch (e) {
-        console.log('error', e);
+        console.log('unable to get stake', e);
         stakingAmountView.value = "NO STAKE FOUND";
     }
 }
