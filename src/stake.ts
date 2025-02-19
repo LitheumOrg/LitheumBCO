@@ -78,6 +78,8 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
                     stakingTableContract = new ethers.Contract(CONTRACT_ADDRESS.STAKING_TABLE, StakingTable.abi, provider) as unknown as IStakingTable;
 
                     await provider.getNetwork();
+
+                    await new Promise(r => setTimeout(r, 2000));
                 } catch (e: any) {
                     console.error("Failed to switch chain:", e);
                     return;
@@ -134,10 +136,11 @@ const stakeBtn = document.getElementById('stake-btn') as HTMLButtonElement;
 const stakingAmountInput = document.getElementById('staking-amount-input') as HTMLButtonElement;
 const ipAddressInput = document.getElementById('ip-address-input') as HTMLButtonElement;
 const portInput = document.getElementById('port-input') as HTMLButtonElement;
+const behalfAddressInput = document.getElementById('behalf-address-input') as HTMLButtonElement;
 
 stakeBtn?.addEventListener('click', async () => {
     if (stakingTableContract && accounts.length) {
-        if (!stakingAmountInput.value || !ipAddressInput.value || !portInput.value) {
+        if (!stakingAmountInput.value || !behalfAddressInput.value) {
             alert('Please fill all the fields');
             return;
         }
@@ -146,15 +149,18 @@ stakeBtn?.addEventListener('click', async () => {
 
         const stakingTableContractSigned = stakingTableContract.connect(signer);
 
-        await stakingTableContractSigned.stake(accounts[0] as string, ethers.parseEther(stakingAmountInput.value), ipAddressInput.value, portInput.value, {
+        await stakingTableContractSigned.stake(behalfAddressInput.value as string, ethers.parseEther(stakingAmountInput.value), ipAddressInput.value, portInput.value, {
             value: ethers.parseEther(stakingAmountInput.value)
         });
+
+        await new Promise(r => setTimeout(r, 2000));
 
         await checkCurrentStakeStatus(accounts[0] as string);
 
         stakingAmountInput.value = ``;
         ipAddressInput.value = ``;
         portInput.value = ``;
+        behalfAddressInput.value = ``;
     }
 });
 
@@ -174,6 +180,8 @@ ipPortBtn?.addEventListener('click', async () => {
         const stakingTableContractSigned = stakingTableContract.connect(signer);
 
         await stakingTableContractSigned.setIpAndPort(ipAddressUpdateInput.value, portUpdateInput.value);
+
+        await new Promise(r => setTimeout(r, 2000));
 
         await checkCurrentStakeStatus(accounts[0] as string);
 
@@ -195,6 +203,8 @@ unstakeBtn?.addEventListener('click', async () => {
         const stakingTableContractSigned = stakingTableContract.connect(signer);
 
         await stakingTableContractSigned.unstake(ethers.parseEther(unstakingAmountInput.value));
+
+        await new Promise(r => setTimeout(r, 2000));
 
         await checkCurrentStakeStatus(accounts[0] as string);
 

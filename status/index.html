@@ -1,1 +1,100 @@
-<h1>Status!!!</h1>
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/global.css" />
+  <!-- <link rel="stylesheet" href="../src/style.css" /> -->
+  <title>Runner Status</title>
+  <style>
+    .table-box {
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .runner-table {
+        width: 100%;
+        border-collapse: collapse;
+        /* table-layout: fixed; */
+        border: 2px solid white;
+        /* background: var(--Black); */
+        /* border-radius: 32px; */
+        /* padding: 40px; */
+        /* gap: 8px; */
+        /* width: 561.203px; */
+        /* margin-left: 120px; */
+        /* justify-content: center; */
+        /* position: relative; */
+    }
+    th, tr {
+        font-size: 20px;
+        text-align: center;
+        display: flex;
+        align-items: stretch;
+        border: 2px solid white;
+
+    }
+    tr {
+        border: 2px solid white;
+
+    }
+    th {
+        padding: 10px;
+        font-weight: bold;
+        color: white;
+    }
+    td {
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+  <div class="container">
+
+
+    <div class="box-container box-container-one">
+      <div class="box box-one">
+
+        <button class="swap-btn" id="check-status-btn">Check Runner Status (WIP)</button>
+
+      </div>
+    </div>
+
+
+    <div class="box-container box-container-two">
+
+        <div class="table-box">
+            <table class="runner-table">
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Staking Amount</th>
+                        <th>IP Address</th>
+                        <th>Port</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="connected-address">sladijsldjasldjlasdkas</td>
+                        <td id="staking-amount-view">asdasdasdas</td>
+                        <td id="ip-address-view">asdasdas</td>
+                        <td id="port-view">34344</td>
+                    </tr>
+            </table>
+
+        </div>
+
+
+    </div>
+
+
+  </div>
+</body>
+
+<script type="module" src="../src/status.ts"></script>
+
+</html>
