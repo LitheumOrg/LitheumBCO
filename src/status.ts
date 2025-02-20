@@ -1,6 +1,6 @@
-import './main.css'
+// import './main.css'
 
-const fetchRunnerList = await fetch("https://testnet.litheum.com/allrunners");
+// const fetchRunnerList = await fetch("https://testnet.litheum.com/allrunners");
 
-const runnerList = await fetchRunnerList.json();
+// const runnerList = await fetchRunnerList.json();
 
