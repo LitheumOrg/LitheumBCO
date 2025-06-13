@@ -3,9 +3,9 @@ import './global.d.ts';
 import modal from './walletConnect.ts';
 
 import { ContractTransactionResponse, ethers } from 'ethers';
-import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/ethers-contracts/LitheumPresaleBCOERC20";
-import { LitheumPrivateBCOERC20 as ILitheumPrivateBCOERC20 } from "../types/ethers-contracts/LitheumPrivateBCOERC20";
-import { LitheumERC20 as ILitheumERC20 } from "../types/ethers-contracts/LitheumERC20";
+import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/ethers-contracts/contracts/LitheumPresaleBCOERC20";
+import { LitheumPrivateBCOERC20 as ILitheumPrivateBCOERC20 } from "../types/ethers-contracts/contracts/LitheumPrivateBCOERC20";
+import { LitheumERC20 as ILitheumERC20 } from "../types/ethers-contracts/contracts/LitheumERC20";
 
 import CONTRACT_ADDRESS from './constants';
 import LitheumPresaleBCOERC20 from  './contracts/LitheumPresaleBCOERC20.sol/LitheumPresaleBCOERC20.json';

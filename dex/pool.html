@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/dex.css" />
+    <title>Litheum SWAP</title>
+</head>
+
+<body>
+    <div id="overlay" class=""></div>
+    <div class="plain-container">
+        <header class="navbar">
+            <div class="logo">LITHEUM SWAP</div>
+
+            <nav class="nav-links">
+                <a href="/dex">Trade</a>
+                <a href="/pool">Pool</a>
+            </nav>
+
+            <div class="actions">
+                <!-- <button class="wallet-button">Connect Wallet</button> -->
+                <div class="hamburger">&#9776;</div>
+            </div>
+        </header>
+
+        <!-- Optional: Mobile menu -->
+        <div class="mobile-menu">
+            <a href="/dex">Trade</a>
+            <a href="/pool">Pool</a>
+        </div>
+        <div class="container">
+            <div class="box-container">
+                <div class="pair-container" id="pair-container">
+                    <h2>Select pair</h2>
+                    <p>Choose the tokens you want to provide liquidity for. You can select tokens on all supported
+                        networks.
+                    </p>
+
+                    <div class="token-selector">
+                        <div class="dropdown">
+                            <button id="token1-btn" class="dropdown-button">
+                                <img src="../assets/litheum-icon.svg" alt="LTH" class="token-icon" />
+                                <span class="token-label">LTH</span>
+                                <span class="arrow">▼</span>
+                            </button>
+                            <div id="token1-menu" class="dropdown-menu">
+                                <div class="dropdown-item" data-symbol="LTH" data-icon="../assets/litheum-icon.svg">
+                                    <img src="../assets/litheum-icon.svg" alt="LTH" class="token-icon" /> LTH
+                                </div>
+                                <div class="dropdown-item" data-symbol="USDT" data-icon="../assets/t-icon.svg">
+                                    <img src="../assets/t-icon.svg" alt="USDT" class="token-icon" /> USDT
+                                </div>
+                                <!-- <div class="dropdown-item" data-symbol="DAI" data-icon="icons/dai.svg">
+                                    <img src="icons/dai.svg" alt="DAI" class="token-icon" /> DAI
+                                </div> -->
+                            </div>
+                        </div>
+
+                        <div class="dropdown">
+                            <button id="token2-btn" class="dropdown-button">
+                                <img src="../assets/t-icon.svg" alt="USDT" class="token-icon" />
+                                <span class="token-label">USDT</span>
+                                <span class="arrow">▼</span>
+                            </button>
+                            <div id="token2-menu" class="dropdown-menu">
+                                <div class="dropdown-item" data-symbol="LTH" data-icon="icons/eth.svg">
+                                    <img src="../assets/litheum-icon.svg" alt="LTH" class="token-icon" /> LTH
+                                </div>
+                                <div class="dropdown-item" data-symbol="USDT" data-icon="../assets/t-icon.svg">
+                                    <img src="../assets/t-icon.svg" alt="USDT" class="token-icon" /> USDT
+                                </div>
+                                <!-- <div class="dropdown-item" data-symbol="DAI" data-icon="icons/dai.svg">
+                                    <img src="icons/dai.svg" alt="DAI" class="token-icon" /> DAI
+                                </div> -->
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="fee-tier">
+                        <h3>Fee tier</h3>
+                        <p>The amount earned providing liquidity. All v2 pools have fixed 0.3% fees. For more options,
+                            provide liquidity on v4.</p>
+                    </div>
+
+                    <button class="continue-button" id="token-selector-btn">Continue</button>
+                </div>
+
+                <div class="pair-container" id="pool-selector">
+                    <!-- <div class="pair-container"> -->
+                    <div class="market-card">
+                        <div class="pair-info">
+                            <img src="eth-matic-icon.svg" alt="Pair" class="pair-icon" />
+                            <span class="pair-text" id="pair-text">ETH / MATIC</span>
+                            <span class="tag">0.3%</span>
+                        </div>
+                        <div class="market-price">
+                            Market price: <strong>XXX LTH</strong> = 1 USDC
+                            <span class="usd-price">($0,000.00)</span>
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                    <div class="deposit-section">
+                        <h2>Deposit tokens</h2>
+                        <p class="subtext">Specify the token amounts for your liquidity contribution.</p>
+
+                        <div class="token-input" id="token1-input-box">
+                            <input type="text" class="amount-input" id="token1-input" />
+                            <div class="token-display">
+                                <img src="../assets/litheum-icon.svg" alt="LTH" class="token-icon" />
+                                <span class="token-symbol">LTH</span>
+                            </div>
+                            <div class="balance-row">
+                                <span class="balance" id="token1-balance">0 ETH</span>
+                                <span class="max">Max</span>
+                            </div>
+                        </div>
+
+                        <div class="token-input" id="token2-input-box">
+                            <input type="text" class="amount-input" id="token2-input" />
+                            <div class="token-display">
+                                <img src="matic-icon.svg" alt="USDT" class="token-icon" />
+                                <span class="token-symbol">USDT</span>
+                            </div>
+                            <div class="balance-row">
+                                <span class="balance" id="token2-balance">0 ETH</span>
+                                <span class="max">Max</span>
+                            </div>
+                        </div>
+
+                        <!-- <button class="insufficient-btn">Insufficient balance</button> -->
+                        <button class="continue-button" id="open-connect-modal">CONNECT WALLET</button>
+                        <button class="continue-button" id="swap">ADD LIQUIDITY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="module" src="/src/pool.ts"></script>
+
+</html>

@@ -1,17 +1,47 @@
 // vite.config.js
-import { resolve } from 'path'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
+// Custom dev server rewrite plugin
+function routeRewriter() {
+  return {
+    name: 'html-route-rewriter',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const url = req.url;
+        if (url === '/') {
+          req.url = '/stake/index.html';
+          console.log('Rewriting to stake/index.html');
+        } else if (url === '/public') {
+          req.url = '/public-offering/index.html';
+        } else if (url === '/status') {
+          req.url = '/status/index.html';
+        } else if (url === '/private') {
+          req.url = '/private/index.html';
+        } else if (url === '/dex') {
+          req.url = '/dex/index.html';
+        } else if (url === '/pool') {
+          req.url = '/dex/pool.html';
+        }
+        next();
+      });
+    }
+  };
+}
 
 export default defineConfig({
+  root: '.',
+  appType: 'mpa',
   build: {
+    outDir: 'dist',
     rollupOptions: {
       input: {
-        // main: resolve(__dirname, 'index.html'),
-        // private: resolve(__dirname, 'private/index.html'),
-        // admin: resolve(__dirname, 'admin/index.html'),
-        main: resolve(__dirname, 'index.html'),
-        status: resolve(__dirname, 'status/index.html'),
+        main: resolve(__dirname, 'stake/index.html'),
+        public: resolve(__dirname, 'public-offering/index.html'),
+        dex: resolve(__dirname, 'dex/index.html'),
+        pool: resolve(__dirname, 'dex/pool.html'),
+        // contact: resolve(__dirname, 'contact.html'),
       },
     },
   },
-})
+  plugins: [routeRewriter()]
+});

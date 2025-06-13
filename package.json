@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "generate-types": "typechain --target=ethers-v6 'src/contracts/**/*.json'"
+    "generate-types": "typechain --target=ethers-v6 'src/litheumswap-contracts/**/*.json' 'src/contracts/**/*.json'"
   },
   "devDependencies": {
     "typescript": "^5.2.2",

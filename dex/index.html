@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/dex.css" />
+    <title>Litheum SWAP</title>
+</head>
+
+<body>
+    <div id="overlay" class=""></div>
+    <div class="plain-container">
+        <header class="navbar">
+            <div class="logo">LITHEUM SWAP</div>
+
+            <nav class="nav-links">
+                <a href="/dex">Trade</a>
+                <a href="/pool">Pool</a>
+            </nav>
+
+            <div class="actions">
+                <!-- <button class="wallet-button">Connect Wallet</button> -->
+                <div class="hamburger">&#9776;</div>
+            </div>
+        </header>
+
+        <!-- Optional: Mobile menu -->
+        <div class="mobile-menu">
+            <a href="/dex">Trade</a>
+            <a href="/pool">Pool</a>
+        </div>
+        <div class="container">
+            <div class="box-container">
+                <div class="box">
+                    <div class="boxes" id="swap-box">
+                        <div class="currency-box" id="usdt-box">
+                            <div class="first-content">
+                                <p class="paid">Sell:</p>
+                                <input class="amount" id="usdt-input" />
+                                <div>
+                                    <p class="max">
+                                        Max Slippage: <span id="slippage-value">2</span> %
+                                        <span cursor="pointer" id="show-slippage" class="edit">(edit)</span>
+                                    </p>
+                                    <div id="slippage-dd" class="editing-popup">
+                                        <div class="percentage" data-value="0">
+                                            <p>0.0 %</p>
+                                        </div>
+                                        <div class="percentage" data-value="0.5">
+                                            <p>0.5 %</p>
+                                        </div>
+                                        <div class="percentage" data-value="1">
+                                            <p>1.0 %</p>
+                                        </div>
+                                        <div class="percentage" data-value="1.5">
+                                            <p>1.5 %</p>
+                                        </div>
+                                        <div class="percentage" data-value="2">
+                                            <p>2.0 %</p>
+                                        </div>
+                                        <div class="btn-container">
+                                            <p class="lost-fee">
+                                                *a lower slippage may result in revert() and lost gas
+                                                fee
+                                            </p>
+                                            <button class="close-btn" id="close-slippage-dd">
+                                                <p>Close</p>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="second-content">
+                                <div class="currency">
+                                    <img src="../assets/t-icon.svg" alt="T" />
+                                    <p>USDT</p>
+                                </div>
+                                <p class="balance">
+                                    BALANCE: <span id="usdt-balance">0</span> USDT
+                                </p>
+                            </div>
+                        </div>
+                        <div class="arrow" id="flip-box" cursor="pointer">
+                            <img src="../assets/arrow-down.svg" alt="Arrow" />
+                        </div>
+                        <div class="currency-box" id="blth-box">
+                            <div class="first-content">
+                                <p class="paid">BUY:</p>
+                                <input class="amount" name="usdt" id="lth-input" />
+                            </div>
+                            <div class="second-content">
+                                <div class="currency">
+                                    <img src="../assets/litheum-icon.svg" alt="Litheum" />
+                                    <p>LTH</p>
+                                </div>
+                                <p class="balance">
+                                    BALANCE: <span id="lth-balance">0</span> LTH
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="swap-btn" id="open-connect-modal">CONNECT WALLET</button>
+                    <button class="swap-btn" id="swap">SWAP</button>
+                    <!-- <button class="swap-btn" id="reverse-swap">REVERSE SWAP</button> -->
+                    <!-- <button class="swap-btn" id="open-network-modal">Open Networks</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="module" src="/src/dex.ts"></script>
+
+</html>

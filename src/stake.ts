@@ -2,7 +2,7 @@ import './main.css'
 import './global.d.ts'
 
 import { ethers } from 'ethers';
-import { StakingTable as IStakingTable } from "../types/ethers-contracts/StakingTable.ts";
+import { StakingTable as IStakingTable } from "../types/ethers-contracts/contracts/StakingTable.ts";
 
 import CONTRACT_ADDRESS from './constants.ts';
 import StakingTable from './contracts/StakingTable.sol/StakingTable.json';
