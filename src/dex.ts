@@ -4,7 +4,6 @@ import './global.d.ts'
 import { ethers } from 'ethers';
 import { MockToken as IMockToken } from "../types/ethers-contracts/litheumswap-contracts/MockToken.ts";
 import { UniswapV2Router02 as IRouter } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Router02.ts";
-import { WrappedLitheum as IWLTH } from "../types/ethers-contracts/litheumswap-contracts/WrappedLitheum.ts";
 import { UniswapV2Factory as IFactory } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Factory.ts";
 
 
@@ -12,8 +11,24 @@ import MockToken from "./litheumswap-contracts/MockToken.sol/MockToken.json"
 import UniswapV2Router02 from "./litheumswap-contracts/UniswapV2Router02.sol/UniswapV2Router02.json"
 import UniswapV2Factory from "./litheumswap-contracts/UniswapV2Factory.sol/UniswapV2Factory.json"
 
+import CONSTANTS from './constants.ts';
+import ISwappingPair from './interface/ISwappingPair.ts';
 
-import CONTRACT_ADDRESS from './constants.ts';
+const { CONTRACT_ADDRESS, TOKEN_METADATA } = CONSTANTS;
+
+let swappingPair: Record<string, ISwappingPair> = {
+    '1': {
+        symbol: 'LTH',
+        balance: 0n, // Using BigInt for balance to handle large numbers
+        contract: null as IMockToken | null, // Will be set later
+    },
+    '2': {
+        symbol: 'USDT',
+        balance: 0n, // Using BigInt for balance to handle large numbers
+        contract: null as IMockToken | null, // Will be set later
+    }
+};
+
 
 const numberWithCommas = (x: String) => {
     let q = Number(x).toFixed(3);
@@ -22,21 +37,22 @@ const numberWithCommas = (x: String) => {
 
 
 let provider: ethers.BrowserProvider;
-let usdtContract: IMockToken;
 let routerContract: IRouter;
-let wlth: IWLTH;
 let factory:IFactory;
 
 if (window.ethereum) {
     provider = new ethers.BrowserProvider(window.ethereum);
 
-    usdtContract = new ethers.Contract(CONTRACT_ADDRESS.MOCK_USDT, MockToken.abi, provider) as unknown as IMockToken;
+    swappingPair[1].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[1].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
+    swappingPair[2].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[2].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
+
     routerContract = new ethers.Contract(CONTRACT_ADDRESS.ROUTER02, UniswapV2Router02.abi, provider) as unknown as IRouter;
-    wlth = new ethers.Contract(CONTRACT_ADDRESS.WRAPPEDLTH, MockToken.abi, provider) as unknown as IWLTH;
     factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
 }
 
 const swapBtn = document.getElementById('swap') as HTMLButtonElement;
+const token1Input = document.getElementById('token1-input') as HTMLButtonElement;
+const token2Input = document.getElementById('token2-input') as HTMLButtonElement;
 
 let accounts: String[] = [];
 swapBtn ? swapBtn.style.display = 'none' : '';
@@ -54,79 +70,104 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
 
     await updateUserBalance();
 
-    const signer = await provider.getSigner();
-
-    const factorySigned = factory.connect(signer);
-
-    // await factorySigned.createPair(CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH);
-
-    const pairAddress = await factorySigned.getPair(CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH);
-
-    console.log('pairAddress', pairAddress);
-
-    // const routerContractSigned = routerContract.connect(signer);
-
-    // await usdtContract.connect(signer).approve(
-    //     CONTRACT_ADDRESS.ROUTER02,
-    //     ethers.parseEther('1000') // Approve 1000 USDT
-    // );
-
-    // await wlth.connect(signer).approve(
-    //     CONTRACT_ADDRESS.ROUTER02,
-    //     ethers.parseEther('400') // Approve 400 LTH
-    // );
-
-    // await routerContractSigned.addLiquidity(
-    //     CONTRACT_ADDRESS.MOCK_USDT,
-    //     CONTRACT_ADDRESS.WRAPPEDLTH,
-    //     ethers.parseEther('1000'), // 1000 USDT
-    //     ethers.parseEther('400'), // 1000 LTH
-    //     ethers.parseEther('0'), // min USDT
-    //     ethers.parseEther('0'), // min LTH
-    //     accounts[0] as string, // recipient
-    //     Math.floor(Date.now() / 1000) + 60 * 10 // deadline: 10 minutes from now
-    // );
-
-    // const isUserWhitelisted = await plthContractSigned.isAddressInWhitelist(accounts[0] as string);
-
-    // await getStaticPrice();
-    // if (!isUserWhitelisted) {
-    //     alert('You are not whitelisted');
-
-    // }
-
     openConnectModalBtn ? openConnectModalBtn.style.display = 'none' : '';
     swapBtn ? swapBtn.style.display = 'block' : '';
 });
 
 export const updateUserBalance = async () => {
-    let userBalance = await getUserBalance();
+    swappingPair[1].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[1].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
+    swappingPair[2].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[2].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
 
-    document.getElementById('usdt-balance')!.innerHTML = numberWithCommas(ethers.formatEther(userBalance.usdtBalance));
-    document.getElementById('lth-balance')!.innerHTML = numberWithCommas(ethers.formatEther(userBalance.lthBalance));
+    await getUserBalance();
+
+    console.log('Updating balance swappingPair', swappingPair);
+
+    document.getElementById('token1-balance')!.innerHTML = numberWithCommas(ethers.formatEther(swappingPair[1].balance));
+    document.getElementById('token2-balance')!.innerHTML = numberWithCommas(ethers.formatEther(swappingPair[2].balance));
 }
 
 const getUserBalance = async () => {
-    if (usdtContract && provider && accounts.length) {
-        let usdtBalance = await usdtContract.balanceOf(accounts[0] as string);
-        let lthBalance = await provider.getBalance(accounts[0] as string);
-
-        console.log('usdtBalance', usdtBalance);
-        console.log('lthBalance', lthBalance);
-
-        return { usdtBalance, lthBalance };
+    if (swappingPair[1].contract && swappingPair[2].contract && provider && accounts.length) {
+        if (swappingPair[1].symbol === 'LTH') {
+            swappingPair[1].balance = await provider.getBalance(accounts[0] as string);
+            swappingPair[2].balance = await swappingPair[2].contract.balanceOf(accounts[0] as string);
+        } else if (swappingPair[2].symbol === 'LTH') {
+            swappingPair[2].balance = await provider.getBalance(accounts[0] as string);
+            swappingPair[1].balance = await swappingPair[1].contract.balanceOf(accounts[0] as string);
+        } else {
+            swappingPair[1].balance = await swappingPair[1].contract.balanceOf(accounts[0] as string);
+            swappingPair[2].balance = await swappingPair[2].contract.balanceOf(accounts[0] as string);
+        }
     }
-
-    return { usdtBalance: 0, lthBalance: 0 };
 }
 
+// ****** DROPDOWN ELEMENT ******* //
+
+
+const setupDropdown = (buttonId: string, menuId: string) => {
+    const btn = document.getElementById(buttonId);
+    const menu = document.getElementById(menuId);
+
+    if (!btn || !menu) {
+        console.warn(`Dropdown setup failed: #${buttonId} or #${menuId} not found.`);
+        return;
+    }
+
+    btn.addEventListener("click", () => {
+        menu.classList.toggle("show");
+    });
+
+    menu.querySelectorAll(".dropdown-item").forEach(async (item) => {
+        item.addEventListener("click", async () => {
+            const symbol = item.getAttribute("data-symbol");
+            const icon = item.getAttribute("data-icon");
+
+            const iconEl = btn.querySelector(".token-icon") as HTMLImageElement;
+            const labelEl = btn.querySelector(".token-label");
+
+            if (icon && symbol && iconEl && labelEl) {
+                if (buttonId === 'token1-btn') {
+                    if (symbol === swappingPair[2].symbol) {
+                        console.log("You cannot select the same token for both fields.");
+                        return;
+                    }
+                    swappingPair[1].symbol = symbol;
+                } else if (buttonId === 'token2-btn') {
+                    if (symbol === swappingPair[1].symbol) {
+                        console.log("You cannot select the same token for both fields.");
+                        return;
+                    }
+                    swappingPair[2].symbol = symbol;
+                }
+                iconEl.src = icon;
+                labelEl.textContent = symbol;
+            }
+
+            menu.classList.remove("show");
+
+            token1Input.value = '';
+            token2Input.value = '';
+
+            if (accounts.length) {
+                await updateUserBalance();
+            }
+        });
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!btn.contains(e.target as Node) && !menu.contains(e.target as Node)) {
+            menu.classList.remove("show");
+        }
+    });
+}
+
+setupDropdown('token1-btn', 'token1-menu');
+setupDropdown('token2-btn', 'token2-menu');
 
 
 // ****** INPUT ELEMENTS ******* //
 
 // @todo: Implement slippage
-const lthInput = document.getElementById('lth-input') as HTMLButtonElement;
-const usdtInput = document.getElementById('usdt-input') as HTMLButtonElement;
 
 let amountOut: any;
 let deadline: any;
@@ -137,39 +178,39 @@ let slippage = '2';
 let conversionType = true;
 
 const updateAvailableLth = async () => {
-    if (routerContract && wlth && usdtInput && usdtInput.value && Number(usdtInput.value) > 0) {
-        const path = [CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH];
+    if (routerContract && swappingPair[1].contract && swappingPair[2].contract && token1Input.value && Number(token1Input.value) > 0) {
+        const path = [TOKEN_METADATA[swappingPair[1].symbol].address, TOKEN_METADATA[swappingPair[2].symbol].address];
         deadline = Math.floor(Date.now() / 1000) + 60 * 10; // 10 minutes from now
         let quotedAmounts = await routerContract.getAmountsOut(
-            ethers.parseEther(usdtInput.value.toString()),
+            ethers.parseEther(token1Input.value.toString()),
             path
         );
         amountOut = ethers.formatEther(quotedAmounts[1])
-        lthInput.value = amountOut;
+        token2Input.value = amountOut;
     } else {
-        lthInput.value = '0';
+        token2Input.value = '';
     }
 }
 
-usdtInput?.addEventListener('input', updateAvailableLth);
+token1Input?.addEventListener('input', updateAvailableLth);
 
 
 const updateAvailableUsdt = async () => {
-    if (routerContract && wlth && lthInput && lthInput.value && Number(lthInput.value) > 0) {
-        const path = [CONTRACT_ADDRESS.WRAPPEDLTH, CONTRACT_ADDRESS.MOCK_USDT];
+    if (routerContract && swappingPair[1].contract && swappingPair[2].contract && token2Input.value && Number(token2Input.value) > 0) {
+        const path = [TOKEN_METADATA[swappingPair[2].symbol].address, TOKEN_METADATA[swappingPair[1].symbol].address];
         deadline = Math.floor(Date.now() / 1000) + 60 * 10; // 10 minutes from now
         let quotedAmounts = await routerContract.getAmountsOut(
-            ethers.parseEther(lthInput.value.toString()),
+            ethers.parseEther(token2Input.value.toString()),
             path
         );
         amountOut = ethers.formatEther(quotedAmounts[1])
-        usdtInput.value = amountOut;
+        token1Input.value = amountOut;
     } else {
-        usdtInput.value = '0';
+        token1Input.value = '';
     }
 }
 
-lthInput?.addEventListener('input', updateAvailableUsdt);
+token2Input?.addEventListener('input', updateAvailableUsdt);
 
 
 // ****** FLIP BUTTON ******* //
@@ -177,6 +218,7 @@ lthInput?.addEventListener('input', updateAvailableUsdt);
 const flipBox = document.getElementById('flip-box');
 
 flipBox?.addEventListener('click', () => {
+    console.log('Flip box clicked');
     const elementList = document.getElementById('swap-box');
     if (elementList) {
         let first = elementList?.firstElementChild as HTMLDivElement;
@@ -199,6 +241,10 @@ flipBox?.addEventListener('click', () => {
         elementList.appendChild(first);
 
         conversionType = !conversionType;
+        let tmpSwap = swappingPair[1];
+        swappingPair[1] = swappingPair[2];
+        swappingPair[2] = tmpSwap;
+        console.log('Swapping pair after flip:', swappingPair);
     }
 });
 
@@ -267,54 +313,86 @@ hamburger.addEventListener('click', () => {
 
 
 const initiateSwap = async () => {
-    if (routerContract && wlth && usdtContract && accounts.length) {
+    if (routerContract && swappingPair[1].contract && swappingPair[2].contract && accounts.length) {
         let signer = await provider.getSigner();
 
         const routerContractSigned = await routerContract.connect(signer);
 
-        let tx;
+        try {
+            let tx;
 
-        if (conversionType) {
+            if (swappingPair[1].symbol === 'LTH' || swappingPair[2].symbol === 'LTH') {
 
-            await usdtContract.connect(signer).approve(
-                CONTRACT_ADDRESS.ROUTER02,
-                ethers.parseEther(usdtInput.value.toString()) // Approve the amount of USDT to swap
-            );
+                if (swappingPair[1].symbol === 'LTH') {
+                    await swappingPair[2].contract.connect(signer).approve(
+                        CONTRACT_ADDRESS.ROUTER02,
+                        ethers.parseEther(token2Input.value.toString()) // Approve the amount of LTH to swap
+                    );
 
-            tx = await routerContractSigned.swapExactTokensForETH(
-                ethers.parseEther(usdtInput.value.toString()), // amount of USDT to swap
-                ethers.parseEther(lthInput.value.toString()), // min amount of LTH to receive
-                [CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH], // path: USDT -> LTH
-                accounts[0] as string, // recipient address
-                deadline, // deadline: 10 minutes from now
-                {
-                    gasLimit: 3000000, // set a gas limit
+                    tx = await routerContractSigned.swapExactETHForTokens(
+                        ethers.parseEther(token2Input.value.toString()), // min amount of USDT to receive
+                        [TOKEN_METADATA[swappingPair[1].symbol].address, TOKEN_METADATA[swappingPair[2].symbol].address], // path: LTH -> USDT
+                        accounts[0] as string, // recipient address
+                        deadline, // deadline: 10 minutes from now
+                        {
+                            value: ethers.parseEther(token1Input.value.toString()), // amount of LTH to swap
+                            gasLimit: 3000000, // set a gas limit
+                        }
+                    );
+                } else {
+                    await swappingPair[1].contract.connect(signer).approve(
+                        CONTRACT_ADDRESS.ROUTER02,
+                        ethers.parseEther(token1Input.value.toString()) // Approve the amount of LTH to swap
+                    );
+
+                    tx = await routerContractSigned.swapExactTokensForETH(
+                        ethers.parseEther(token1Input.value.toString()), // amount of USDT to swap
+                        ethers.parseEther(token2Input.value.toString()), // min amount of LTH to receive @todo: slippage
+                        [TOKEN_METADATA[swappingPair[1].symbol].address, TOKEN_METADATA[swappingPair[2].symbol].address], // path: USDT -> LTH
+                        accounts[0] as string, // recipient address
+                        deadline, // deadline: 10 minutes from now
+                        {
+                            gasLimit: 3000000, // set a gas limit
+                        }
+                    );
                 }
-            );
-        } else {
-            await wlth.connect(signer).approve(
-                CONTRACT_ADDRESS.ROUTER02,
-                ethers.parseEther(lthInput.value.toString()) // Approve the amount of LTH to swap
-            );
+            }
+            else {
+                await swappingPair[1].contract.connect(signer).approve(
+                    CONTRACT_ADDRESS.ROUTER02,
+                    ethers.parseEther(token1Input.value.toString()) // Approve the amount of token1 to swap
+                );
 
-            tx = await routerContractSigned.swapExactETHForTokens(
-                ethers.parseEther(usdtInput.value.toString()), // min amount of USDT to receive
-                [CONTRACT_ADDRESS.WRAPPEDLTH, CONTRACT_ADDRESS.MOCK_USDT], // path: LTH -> USDT
-                accounts[0] as string, // recipient address
-                deadline, // deadline: 10 minutes from now
-                {
-                    value: ethers.parseEther(lthInput.value.toString()), // amount of LTH to swap
-                    gasLimit: 3000000, // set a gas limit
-                }
-            );
+                await swappingPair[2].contract.connect(signer).approve(
+                    CONTRACT_ADDRESS.ROUTER02,
+                    ethers.parseEther(token2Input.value.toString()) // Approve the amount of token1 to swap
+                );
+
+                tx = await routerContractSigned.swapExactTokensForTokens(
+                    ethers.parseEther(token1Input.value.toString()), // amount of token1 to swap
+                    ethers.parseEther(token2Input.value.toString()), // min amount of token2 to receive
+                    [TOKEN_METADATA[swappingPair[1].symbol].address, TOKEN_METADATA[swappingPair[2].symbol].address], // path: token1 -> token2
+                    accounts[0] as string, // recipient address
+                    deadline, // deadline: 10 minutes from now
+                    {
+                        gasLimit: 3000000, // set a gas limit
+                    }
+                );
+            }
+            // @todo: clean up after swap
+
+            console.log('Swap initiated successfully');
+            await tx.wait();
+            console.log('Swap completed successfully');
+            token1Input.value = '';
+            token2Input.value = '';
+
+            await updateUserBalance();
+        } catch (error) {
+            console.error('Error during swap:', error);
+            alert('Swap failed. Please check the console for details.');
         }
 
-        // @todo: clean up after swap
-
-        console.log('Swap initiated successfully');
-        await tx.wait();
-        console.log('Swap completed successfully');
-        await updateUserBalance();
     }
 }
 

@@ -10,24 +10,21 @@ import { UniswapV2Pair as IPair } from "../types/ethers-contracts/litheumswap-co
 
 
 import MockToken from "./litheumswap-contracts/MockToken.sol/MockToken.json"
+import WrappedLitheum from "./litheumswap-contracts/WrappedLitheum.sol/WrappedLitheum.json"
 import UniswapV2Router02 from "./litheumswap-contracts/UniswapV2Router02.sol/UniswapV2Router02.json"
 import UniswapV2Factory from "./litheumswap-contracts/UniswapV2Factory.sol/UniswapV2Factory.json"
 import UniswapV2Pair from "./litheumswap-contracts/UniswapV2Pair.sol/UniswapV2Pair.json"
 
 
-import CONTRACT_ADDRESS from './constants.ts';
+import CONSTANTS from './constants.ts';
+import ISwappingPair from './interface/ISwappingPair.ts';
+
+const { CONTRACT_ADDRESS, TOKEN_METADATA } = CONSTANTS;
 
 const numberWithCommas = (x: String) => {
     let q = Number(x).toFixed(3);
     return q.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-
-interface ISwappingPair {
-    symbol: string;
-    balance: bigint; // Using BigInt for balance to handle large numbers
-    contract: IMockToken | null; // Will be set later
-    swapAmount?: string; // Optional field to store the amount to swap
-};
 
 let swappingPair: Record<string, ISwappingPair> = {
     '1': {
@@ -39,60 +36,20 @@ let swappingPair: Record<string, ISwappingPair> = {
         symbol: 'USDT',
         balance: 0n, // Using BigInt for balance to handle large numbers
         contract: null as IMockToken | null, // Will be set later
-    },
-    // '3': {
-    //     symbol: 'USDC',
-    //     balance: 0n, // Using BigInt for balance to handle large numbers
-    //     contract: null as IMockToken | null, // Will be set later
-    // }
-}
-
-// let token1 = 'LTH';
-// let token2 = 'USDT';
-
-const TOKEN_METADATA: Record<string, {
-    name: string;
-    symbol: string;
-    icon: string;
-    address: string;
-    decimals: number;
-}> = {
-    LTH: {
-        name: 'Litheum',
-        symbol: 'WLTH',
-        icon: '../assets/litheum-icon.svg',
-        address: CONTRACT_ADDRESS.WRAPPEDLTH,
-        decimals: 18,
-    },
-    USDT: {
-        name: 'USD Tether',
-        symbol: 'USDT',
-        icon: '../assets/t-icon.svg',
-        address: CONTRACT_ADDRESS.MOCK_USDT,
-        decimals: 18,
-    },
-    USDC: {
-        name: 'USD Coin',
-        symbol: 'USDC',
-        icon: '../assets/c-icon.svg',
-        address: CONTRACT_ADDRESS.MOCK_USDC,
-        decimals: 18,
-    },
+    }
 };
 
 let provider: ethers.BrowserProvider;
-let token1Contract: IMockToken;
-let token2Contract: IMockToken;
 let routerContract: IRouter;
 let wlth: IWLTH;
 let factory: IFactory;
+let pairContract: IPair;
 
 if (window.ethereum) {
     provider = new ethers.BrowserProvider(window.ethereum);
 
-    // usdtContract = new ethers.Contract(CONTRACT_ADDRESS.MOCK_USDT, MockToken.abi, provider) as unknown as IMockToken;
     routerContract = new ethers.Contract(CONTRACT_ADDRESS.ROUTER02, UniswapV2Router02.abi, provider) as unknown as IRouter;
-    wlth = new ethers.Contract(CONTRACT_ADDRESS.WRAPPEDLTH, MockToken.abi, provider) as unknown as IWLTH;
+    wlth = new ethers.Contract(CONTRACT_ADDRESS.WRAPPEDLTH, WrappedLitheum.abi, provider) as unknown as IWLTH;
     factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
 }
 
@@ -113,20 +70,6 @@ openConnectModalBtn && openConnectModalBtn.addEventListener('click', async () =>
     console.log('accounts', accounts);
 
     await updateUserBalance();
-
-    const bal = await provider.getBalance(accounts[0] as string);
-
-    console.log('balance', bal);
-
-    // const signer = await provider.getSigner();
-
-    // const factorySigned = factory.connect(signer);
-
-    // await factorySigned.createPair(CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH);
-
-    // const pairAddress = await factorySigned.getPair(CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH);
-
-    // console.log('pairAddress', pairAddress);
 
     openConnectModalBtn ? openConnectModalBtn.style.display = 'none' : '';
     swapBtn ? swapBtn.style.display = 'block' : '';
@@ -226,7 +169,7 @@ const poolSelector = document.getElementById('pool-selector') as HTMLDivElement;
 if (poolSelector) {
     poolSelector.style.display = 'none';
 }
-tokenSelectorBtn?.addEventListener('click', () => {
+tokenSelectorBtn?.addEventListener('click', async () => {
     const pairContainer = document.getElementById('pair-container') as HTMLDivElement;
     pairContainer.style.display = 'none';
     poolSelector.style.display = 'block';
@@ -237,8 +180,15 @@ tokenSelectorBtn?.addEventListener('click', () => {
 
     setupTokenInputBox('token1-input-box', swappingPair[1], 'token2-input-box');
     setupTokenInputBox('token2-input-box', swappingPair[2], 'token1-input-box');
+    const pairAddress = await factory.getPair(
+        TOKEN_METADATA[swappingPair[1].symbol].address,
+        TOKEN_METADATA[swappingPair[2].symbol].address
+    );
+    pairContract = new ethers.Contract(pairAddress, UniswapV2Pair.abi, provider) as unknown as IPair;
 
 });
+
+let deadline: ethers.Typed | ethers.BigNumberish;
 
 const setupTokenInputBox = (inputId: string, swapElement: ISwappingPair, otherInputId: string) => {
     const inputBox = document.getElementById(inputId) as HTMLDivElement;
@@ -277,15 +227,16 @@ const setupTokenInputBox = (inputId: string, swapElement: ISwappingPair, otherIn
         const value = (e.target as HTMLInputElement).value;
         console.log(`Input for ${swapElement.symbol}: ${value}`);
         if (routerContract && Number(value) > 0) {
-            const otherToken = getOtherToken(swapElement.symbol);
-            const path = [TOKEN_METADATA[swapElement.symbol].address, TOKEN_METADATA[otherToken.symbol].address];
-            // deadline = Math.floor(Date.now() / 1000) + 60 * 10; // 10 minutes from now
+            deadline = Math.floor(Date.now() / 1000) + 60 * 10; // 10 minutes from now
             try {
-                let quotedAmounts = await routerContract.getAmountsOut(
-                    ethers.parseEther(value),
-                    path
+                const [reserveETH, reserveUSDT] = await pairContract.getReserves();
+                const quoteToken = await routerContract.quote(
+                    ethers.parseEther(value), // amountETHDesired
+                    reserveETH,
+                    reserveUSDT
                 );
-                swapElement.swapAmount = ethers.formatEther(quotedAmounts[1])
+
+                swapElement.swapAmount = ethers.formatEther(quoteToken);
             } catch (error) {
                 console.error(`Error fetching amounts for ${swapElement.symbol}:`, error);
                 swapElement.swapAmount = value;
@@ -314,8 +265,6 @@ const token2Input = document.getElementById('token2-input') as HTMLInputElement;
 
 const initiateSwap = async () => {
     console.log('Initiating swap...');
-    console.log('tpken1:', token1Input.value);
-    console.log('tpken2:', token2Input.value);
 
     if (swappingPair[1].balance < ethers.parseEther(token1Input.value)) {
         console.error(`Insufficient balance for ${swappingPair[1].symbol}`);
@@ -327,120 +276,149 @@ const initiateSwap = async () => {
         return;
     }
 
-    swappingPair[1].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[1].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
-    swappingPair[2].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[2].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
+    try {
+        swappingPair[1].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[1].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
+        swappingPair[2].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[2].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
 
-    if (swappingPair[1].contract && swappingPair[2].contract) {
-        let signer = await provider.getSigner();
-        const routerContractSigned = routerContract.connect(signer);
 
-        console.log('Approving token1 contract for swap...');
+        if (swappingPair[1].contract && swappingPair[2].contract) {
+            if (swappingPair[1].symbol === 'LTH' || swappingPair[2].symbol === 'LTH') {
 
-        await swappingPair[1].contract.connect(signer).approve(
-            CONTRACT_ADDRESS.ROUTER02,
-            ethers.parseEther(token1Input.value.toString())
-        );
+                let signer = await provider.getSigner();
+                const routerContractSigned = routerContract.connect(signer);
+                let swappingTokenAddress;
+                let amountETHMin;
+                let amountTokenMin;
+                let value;
+                let tokenValue;
 
-        console.log('Approving token2 contract for swap...');
 
-        await swappingPair[2].contract.connect(signer).approve(
-            CONTRACT_ADDRESS.ROUTER02,
-            ethers.parseEther(token2Input.value.toString())
-        );
+                if (swappingPair[2].symbol === 'LTH') {
+                    console.log('Approving token1 contract for swap...');
+                    await swappingPair[1].contract.connect(signer).approve(
+                        CONTRACT_ADDRESS.ROUTER02,
+                        ethers.parseEther(token1Input.value.toString())
+                    );
 
-        console.log('Token contracts approved for swap');
+                    swappingTokenAddress = TOKEN_METADATA[swappingPair[1].symbol].address;
+                    value = ethers.parseEther(token2Input.value.toString());
+                    amountETHMin = value * 995n / 1000n;
+                    tokenValue = ethers.parseEther(token1Input.value.toString());
+                    amountTokenMin = tokenValue * 995n / 1000n;
+                } else {
+                    console.log('Approving token2 contract for swap...');
 
-        let tx = await routerContractSigned.addLiquidityETH(
-            TOKEN_METADATA[swappingPair[2].symbol].address, // address of token to add
-            ethers.parseEther(token2Input.value.toString()), // amount of token to add
-            ethers.parseEther(token2Input.value.toString()), // min amount of token to add
-            ethers.parseEther(token1Input.value.toString()), // min amount of ETH to add
-            accounts[0] as string, // recipient address
-            Math.floor(Date.now() / 1000) + 60 * 10, // deadline: 10 minutes from now
-            {
-                value: ethers.parseEther(token1Input.value.toString()), // amount of ETH to add
+                    await swappingPair[2].contract.connect(signer).approve(
+                        CONTRACT_ADDRESS.ROUTER02,
+                        ethers.parseEther(token2Input.value.toString())
+                    );
+
+                    swappingTokenAddress = TOKEN_METADATA[swappingPair[2].symbol].address;
+                    value = ethers.parseEther(token1Input.value.toString());
+                    amountETHMin = value * 995n / 1000n;
+                    tokenValue = ethers.parseEther(token2Input.value.toString());
+                    amountTokenMin = tokenValue * 995n / 1000n;
+                }
+
+                console.log('Token contracts approved for swap', swappingPair);
+
+                let tx = await routerContractSigned.addLiquidityETH(
+                    swappingTokenAddress, // address of token to add
+                    tokenValue, // amount of token to add
+                    amountTokenMin, // min amount of token to add
+                    amountETHMin, // min amount of ETH to add
+                    accounts[0] as string, // recipient address
+                    deadline, // deadline: 10 minutes from now
+                    {
+                        value: value, // amount of ETH to add
+                        gasLimit: 3000000, // set a gas limit
+                        gasPrice: ethers.parseUnits('1', 'gwei'), // set a gas price
+                    }
+                );
+                console.log('Transaction initiated:', tx);
+                console.log('Waiting for transaction to be mined...');
+
+                await tx.wait();
+                console.log('Liquidity added successfully');
+
+                const uniswapV2Factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
+
+                const pairAddress = await uniswapV2Factory.getPair(
+                    TOKEN_METADATA[swappingPair[1].symbol].address,
+                    TOKEN_METADATA[swappingPair[2].symbol].address
+                );
+                console.log('Pair address:', pairAddress);
+
+                const pair = new ethers.Contract(pairAddress, UniswapV2Pair.abi, provider) as unknown as IPair;
+                let test = await pair.getReserves();
+
+                console.log('Reserves:', test);
+
+                await userSwapAlert();
+            } else {
+                console.log('Approving token1 and token2 contracts for swap...');
+                let signer = await provider.getSigner();
+                const routerContractSigned = routerContract.connect(signer);
+
+                await swappingPair[1].contract.connect(signer).approve(
+                    CONTRACT_ADDRESS.ROUTER02,
+                    ethers.parseEther(token1Input.value.toString())
+                );
+                await swappingPair[2].contract.connect(signer).approve(
+                    CONTRACT_ADDRESS.ROUTER02,
+                    ethers.parseEther(token2Input.value.toString())
+                );
+
+                let tx = await routerContractSigned.addLiquidity(
+                    TOKEN_METADATA[swappingPair[1].symbol].address, // address of token1 to add
+                    TOKEN_METADATA[swappingPair[2].symbol].address, // address of token2 to add
+                    ethers.parseEther(token1Input.value.toString()), // amount of token1 to add
+                    ethers.parseEther(token2Input.value.toString()), // amount of token2 to add
+                    ethers.parseEther(token1Input.value.toString()), // min amount of token1 to add
+                    ethers.parseEther(token2Input.value.toString()), // min amount of token2 to add
+                    accounts[0] as string, // recipient address
+                    deadline, // deadline: 10 minutes from now
+                    {
+                        gasLimit: 3000000, // set a gas limit
+                    }
+                );
+                console.log('Transaction initiated:', tx);
+                console.log('Waiting for transaction to be mined...');
+
+                await tx.wait();
+                console.log('Liquidity added successfully');
+
+                const uniswapV2Factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
+
+                const pairAddress = await uniswapV2Factory.getPair(
+                    TOKEN_METADATA[swappingPair[1].symbol].address,
+                    TOKEN_METADATA[swappingPair[2].symbol].address
+                );
+                console.log('Pair address:', pairAddress);
+
+                const pair = new ethers.Contract(pairAddress, UniswapV2Pair.abi, provider) as unknown as IPair;
+                let test = await pair.getReserves();
+
+                console.log('Reserves:', test);
+
+                await userSwapAlert();
             }
-        );
-
-        // let tx = await routerContractSigned.addLiquidity(
-        //     TOKEN_METADATA[swappingPair[1].symbol].address, // address of token1 to add
-        //     TOKEN_METADATA[swappingPair[2].symbol].address, // address of token2 to add
-        //     ethers.parseEther(token1Input.value.toString()), // amount of token1 to add
-        //     ethers.parseEther(token2Input.value.toString()), // amount of token2 to add
-        //     ethers.parseEther(token1Input.value.toString()), // min amount of token1 to add
-        //     ethers.parseEther(token2Input.value.toString()), // min amount of token2 to add
-        //     accounts[0] as string, // recipient address
-        //     Math.floor(Date.now() / 1000) + 60 * 10, // deadline: 10 minutes from now
-        //     {
-        //         gasLimit: 3000000, // set a gas limit
-        //     }
-        // );
-        console.log('Transaction initiated:', tx);
-        console.log('Waiting for transaction to be mined...');
-
-        await tx.wait();
-        console.log('Liquidity added successfully');
-
-        const uniswapV2Factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
-
-        const pairAddress = await uniswapV2Factory.getPair(
-            TOKEN_METADATA[swappingPair[1].symbol].address,
-            TOKEN_METADATA[swappingPair[2].symbol].address
-        );
-        console.log('Pair address:', pairAddress);
-
-        const pair = new ethers.Contract(pairAddress, UniswapV2Pair.abi, provider) as unknown as IPair;
-        let test = await pair.getReserves();
-
-        console.log('Reserves:', test);
-
-    } else {
-        console.error('Token contracts are not initialized.');
+        } else {
+            console.error('Token contracts are not initialized.');
+        }
+    } catch (error) {
+        console.error('Error during swap:', error);
+        alert(`Swap failed`);
+        return;
     }
-    // if (routerContract && wlth && usdtContract && accounts.length) {
 
-    //     const routerContractSigned = await routerContract.connect(signer);
+}
 
-    //     let tx;
-
-    //     if (conversionType) {
-
-
-    //         tx = await routerContractSigned.swapExactTokensForETH(
-    //             ethers.parseEther(usdtInput.value.toString()), // amount of USDT to swap
-    //             ethers.parseEther(lthInput.value.toString()), // min amount of LTH to receive
-    //             [CONTRACT_ADDRESS.MOCK_USDT, CONTRACT_ADDRESS.WRAPPEDLTH], // path: USDT -> LTH
-    //             accounts[0] as string, // recipient address
-    //             deadline, // deadline: 10 minutes from now
-    //             {
-    //                 gasLimit: 3000000, // set a gas limit
-    //             }
-    //         );
-    //     } else {
-    //         await wlth.connect(signer).approve(
-    //             CONTRACT_ADDRESS.ROUTER02,
-    //             ethers.parseEther(lthInput.value.toString()) // Approve the amount of LTH to swap
-    //         );
-
-    //         tx = await routerContractSigned.swapExactETHForTokens(
-    //             ethers.parseEther(usdtInput.value.toString()), // min amount of USDT to receive
-    //             [CONTRACT_ADDRESS.WRAPPEDLTH, CONTRACT_ADDRESS.MOCK_USDT], // path: LTH -> USDT
-    //             accounts[0] as string, // recipient address
-    //             deadline, // deadline: 10 minutes from now
-    //             {
-    //                 value: ethers.parseEther(lthInput.value.toString()), // amount of LTH to swap
-    //                 gasLimit: 3000000, // set a gas limit
-    //             }
-    //         );
-    //     }
-
-    //     // @todo: clean up after swap
-
-    //     console.log('Swap initiated successfully');
-    //     await tx.wait();
-    //     console.log('Swap completed successfully');
-    //     await updateUserBalance();
-    // }
+const userSwapAlert = async () => {
+    token1Input.value = '';
+    token2Input.value = '';
+    alert(`You have successfully added liquidity for ${swappingPair[1].symbol} / ${swappingPair[2].symbol}`);
+    await updateUserBalance();
 }
 
 swapBtn?.addEventListener('click', initiateSwap);
