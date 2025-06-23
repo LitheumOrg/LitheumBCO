@@ -422,3 +422,19 @@ const userSwapAlert = async () => {
 }
 
 swapBtn?.addEventListener('click', initiateSwap);
+
+// ****** STYLING ******* //
+
+const hamburger = document.querySelector('.hamburger') as HTMLDivElement;
+const mobileMenu = document.querySelector('.mobile-menu') as HTMLDivElement;
+
+let menuOpen = false;
+
+hamburger.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    if (menuOpen) {
+        mobileMenu.classList.add('open');
+    } else {
+        mobileMenu.classList.remove('open');
+    }
+});

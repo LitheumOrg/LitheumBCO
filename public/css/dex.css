@@ -99,12 +99,29 @@ button {
   }
 
   .mobile-menu {
-    display: flex;
+    display: none;
     flex-direction: column;
     background: white;
-    padding: 1rem 2rem;
-    gap: 1rem;
     border-top: 1px solid #eaeaea;
+  }
+
+  .open {
+    display: flex;
+  }
+
+  .mobile-menu-link {
+    padding: 1rem 0rem 1rem 2rem;
+    text-decoration: none;
+    background-color: var(--Dark-Green);
+    color: var(--Black);
+    font-family: 'Litheum Title', sans-serif;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .mobile-menu-link:hover {
+    background-color: var(--Beige);
+    color: var(--Black);
   }
 }
 
@@ -377,7 +394,7 @@ button {
 }
 
 .max {
-  color: var(--Green)
+  color: var(--Green);
   cursor: pointer;
 }
 
