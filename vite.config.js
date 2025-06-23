@@ -9,6 +9,7 @@ function routeRewriter() {
       server.middlewares.use((req, res, next) => {
         const url = req.url;
         if (url === '/') {
+          // stake.litheum.com
           req.url = '/stake/index.html';
           console.log('Rewriting to stake/index.html');
         } else if (url === '/public') {
@@ -18,8 +19,10 @@ function routeRewriter() {
         } else if (url === '/private') {
           req.url = '/private/index.html';
         } else if (url === '/dex') {
+          // swap.litheum.com   ------> localhost:5173/dex
           req.url = '/dex/index.html';
         } else if (url === '/pool') {
+          // swap.litheum.com/pool -------> localhost:5173/pool
           req.url = '/dex/pool.html';
         }
         next();
