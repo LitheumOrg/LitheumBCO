@@ -23,7 +23,7 @@ function routeRewriter() {
           req.url = '/dex/index.html';
         } else if (url === '/pool') {
           // swap.litheum.com/pool -------> localhost:5173/pool
-          req.url = '/dex/pool.html';
+          req.url = '/pool/index.html';
         } else if (url === '/runner') {
           // runner.litheum.com
           req.url = '/runner/index.html';
@@ -41,10 +41,10 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'stake/index.html'),
+        main: resolve(__dirname, 'index.html'),
         public: resolve(__dirname, 'public-offering/index.html'),
         dex: resolve(__dirname, 'dex/index.html'),
-        pool: resolve(__dirname, 'dex/pool.html'),
+        pool: resolve(__dirname, 'pool/index.html'),
         runner: resolve(__dirname, 'runner/index.html'),
         // contact: resolve(__dirname, 'contact.html'),
       },

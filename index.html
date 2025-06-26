@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/global.css" />
+  <!-- <link rel="stylesheet" href="../src/style.css" /> -->
+  <title>Litheum Staking Dapp</title>
+</head>
+
+<body>
+  <div id="overlay" class="popup-bg">
+    <h1 class="popup-title">Want to be a node runner for Litheum ?</h1>
+    <button class="connect-wallet-btn" id="open-connect-modal">CONNECT WALLET</button>
+  </div>
+  <div class="container">
+
+
+    <div class="box-container box-container-one">
+      <div class="box box-one">
+
+        <button class="swap-btn" id="check-status-btn">Check Runner Status (WIP)</button>
+
+        <div class="boxes">
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">Account Stake Info: <span id="connected-address"></span> </p>
+              <div>
+              </div>
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">STAKING AMOUNT*:</p>
+              <input class="amount" name="staking-amount" id="staking-amount-view" disabled/>
+              <div>
+              </div>
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">IP ADDRESS / DOMAIN NAME:</p>
+              <input class="amount" name="ip-address" id="ip-address-view" disabled/>
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">PORT:</p>
+              <input class="amount" name="port" id="port-view" disabled/>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="boxes">
+            <div class="currency-box">
+              <div class="first-content">
+                <p class="paid">UNSTAKING AMOUNT*:</p>
+                <input class="amount" name="unstaking-amount" id="unstake-amount-input" />
+                <div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="swap-btn" id="unstake-btn">UNSTAKE</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="box-container box-container-two">
+      <div class="box">
+        <div class="boxes">
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">STAKING AMOUNT*:</p>
+              <input class="amount" name="staking-amount" id="staking-amount-input" />
+              <div>
+              </div>
+            </div>
+            <div class="second-content">
+              <p class="balance">BALANCE: <span id="lth-balance">0</span> LTH</p>
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">STAKING ON BEHALF OF (ADDRESS):</p>
+              <input class="amount" name="behalf-address" id="behalf-address-input" />
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">IP ADDRESS / DOMAIN NAME:</p>
+              <input class="amount" name="ip-address" id="ip-address-input" />
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">PORT:</p>
+              <input class="amount" name="port" id="port-input" />
+            </div>
+          </div>
+        </div>
+        <button class="swap-btn" id="stake-btn">STAKE</button>
+      </div>
+
+      <div id="update-box" class="box">
+        <div class="boxes">
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">IP ADDRESS / DOMAIN NAME:</p>
+              <input class="amount" name="ip-address" id="ip-address-update-input" />
+            </div>
+          </div>
+          <div class="currency-box">
+            <div class="first-content">
+              <p class="paid">PORT:</p>
+              <input class="amount" name="port" id="port-update-input" />
+            </div>
+          </div>
+        </div>
+        <button class="swap-btn" id="ip-port-btn">Update Ip And Port</button>
+      </div>
+
+    </div>
+
+
+  </div>
+</body>
+
+<script type="module" src="./src/stake.ts"></script>
+
+</html>
