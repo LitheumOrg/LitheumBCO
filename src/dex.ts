@@ -4,12 +4,12 @@ import './global.d.ts'
 import { ethers } from 'ethers';
 import { MockToken as IMockToken } from "../types/ethers-contracts/litheumswap-contracts/MockToken.ts";
 import { UniswapV2Router02 as IRouter } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Router02.ts";
-import { UniswapV2Factory as IFactory } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Factory.ts";
+// import { UniswapV2Factory as IFactory } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Factory.ts";
 
 
 import MockToken from "./litheumswap-contracts/MockToken.sol/MockToken.json"
 import UniswapV2Router02 from "./litheumswap-contracts/UniswapV2Router02.sol/UniswapV2Router02.json"
-import UniswapV2Factory from "./litheumswap-contracts/UniswapV2Factory.sol/UniswapV2Factory.json"
+// import UniswapV2Factory from "./litheumswap-contracts/UniswapV2Factory.sol/UniswapV2Factory.json"
 
 import CONSTANTS from './constants.ts';
 import ISwappingPair from './interface/ISwappingPair.ts';
@@ -38,7 +38,7 @@ const numberWithCommas = (x: String) => {
 
 let provider: ethers.BrowserProvider;
 let routerContract: IRouter;
-let factory:IFactory;
+// let factory:IFactory;
 
 if (window.ethereum) {
     provider = new ethers.BrowserProvider(window.ethereum);
@@ -47,7 +47,7 @@ if (window.ethereum) {
     swappingPair[2].contract = new ethers.Contract(TOKEN_METADATA[swappingPair[2].symbol].address, MockToken.abi, provider) as unknown as IMockToken;
 
     routerContract = new ethers.Contract(CONTRACT_ADDRESS.ROUTER02, UniswapV2Router02.abi, provider) as unknown as IRouter;
-    factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
+    // factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
 }
 
 const swapBtn = document.getElementById('swap') as HTMLButtonElement;

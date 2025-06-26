@@ -5,10 +5,11 @@ import { ContractTransactionResponse, ethers } from 'ethers';
 import { MockUSDTToken as IMockUSDT } from "../types/ethers-contracts/contracts/MockUSDTToken.ts";
 import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/ethers-contracts/contracts/LitheumPresaleBCOERC20";
 
-import CONTRACT_ADDRESS from './constants';
 import LitheumPresaleBCOERC20 from './contracts/LitheumPresaleBCOERC20.sol/LitheumPresaleBCOERC20.json';
 import MockUSDTToken from './contracts/MockUSDTToken.sol/MockUSDTToken.json';
 
+import CONSTANTS from './constants.ts';
+const { CONTRACT_ADDRESS } = CONSTANTS;
 
 const numberWithCommas = (x: String) => {
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");

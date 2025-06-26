@@ -4,13 +4,13 @@ import './global.d.ts'
 import { ethers } from 'ethers';
 import { MockToken as IMockToken } from "../types/ethers-contracts/litheumswap-contracts/MockToken.ts";
 import { UniswapV2Router02 as IRouter } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Router02.ts";
-import { WrappedLitheum as IWLTH } from "../types/ethers-contracts/litheumswap-contracts/WrappedLitheum.ts";
+// import { WrappedLitheum as IWLTH } from "../types/ethers-contracts/litheumswap-contracts/WrappedLitheum.ts";
 import { UniswapV2Factory as IFactory } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Factory.ts";
 import { UniswapV2Pair as IPair } from "../types/ethers-contracts/litheumswap-contracts/UniswapV2Pair.ts";
 
 
 import MockToken from "./litheumswap-contracts/MockToken.sol/MockToken.json"
-import WrappedLitheum from "./litheumswap-contracts/WrappedLitheum.sol/WrappedLitheum.json"
+// import WrappedLitheum from "./litheumswap-contracts/WrappedLitheum.sol/WrappedLitheum.json"
 import UniswapV2Router02 from "./litheumswap-contracts/UniswapV2Router02.sol/UniswapV2Router02.json"
 import UniswapV2Factory from "./litheumswap-contracts/UniswapV2Factory.sol/UniswapV2Factory.json"
 import UniswapV2Pair from "./litheumswap-contracts/UniswapV2Pair.sol/UniswapV2Pair.json"
@@ -41,7 +41,7 @@ let swappingPair: Record<string, ISwappingPair> = {
 
 let provider: ethers.BrowserProvider;
 let routerContract: IRouter;
-let wlth: IWLTH;
+// let wlth: IWLTH;
 let factory: IFactory;
 let pairContract: IPair;
 
@@ -49,7 +49,7 @@ if (window.ethereum) {
     provider = new ethers.BrowserProvider(window.ethereum);
 
     routerContract = new ethers.Contract(CONTRACT_ADDRESS.ROUTER02, UniswapV2Router02.abi, provider) as unknown as IRouter;
-    wlth = new ethers.Contract(CONTRACT_ADDRESS.WRAPPEDLTH, WrappedLitheum.abi, provider) as unknown as IWLTH;
+    // wlth = new ethers.Contract(CONTRACT_ADDRESS.WRAPPEDLTH, WrappedLitheum.abi, provider) as unknown as IWLTH;
     factory = new ethers.Contract(CONTRACT_ADDRESS.FACTORY, UniswapV2Factory.abi, provider) as unknown as IFactory;
 }
 

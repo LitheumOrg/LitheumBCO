@@ -7,11 +7,12 @@ import { LitheumPresaleBCOERC20 as ILitheumPresaleBCOERC20 } from "../types/ethe
 import { LitheumPrivateBCOERC20 as ILitheumPrivateBCOERC20 } from "../types/ethers-contracts/contracts/LitheumPrivateBCOERC20";
 import { LitheumERC20 as ILitheumERC20 } from "../types/ethers-contracts/contracts/LitheumERC20";
 
-import CONTRACT_ADDRESS from './constants';
 import LitheumPresaleBCOERC20 from  './contracts/LitheumPresaleBCOERC20.sol/LitheumPresaleBCOERC20.json';
 import LitheumPrivateBCOERC20 from './contracts/LitheumPrivateBCOERC20.sol/LitheumPrivateBCOERC20.json';
 import LitheumERC20 from './contracts/LitheumERC20.sol/LitheumERC20.json';
 
+import CONSTANTS from './constants.ts';
+const { CONTRACT_ADDRESS } = CONSTANTS;
 
 let provider: ethers.BrowserProvider;
 let blthContract: ILitheumPresaleBCOERC20;
