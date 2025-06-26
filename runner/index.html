@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Node Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #1e293b;
+      --accent-color: #0ea5e9;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --bg-color: #f8fafc;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--primary-color);
+    }
+
+    nav {
+      background-color: white;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav h1 {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .content {
+      padding: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .grid-graphs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .grid-graphs .card {
+      flex: 1 1 calc(50% - 0.5rem);
+      min-width: 300px;
+    }
+
+    @media (max-width: 600px) {
+      .grid-graphs .card {
+        flex: 1 1 100%;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .status {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .status.ok { color: var(--success-color); }
+    .status.not-ok { color: var(--danger-color); }
+
+    .card.single-point {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+
+    ul.link-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul.link-list li a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h1>Runner Node Dashboard</h1>
+  </nav>
+  <div class="content">
+    <div class="grid">
+      <div class="card status ok">Status: OK</div>
+      <div class="card single-point">Daily APR<br><span>12.5%</span></div>
+      <div class="card single-point">Weekly APR<br><span>87.3%</span></div>
+      <div class="card single-point">Monthly APR<br><span>354%</span></div>
+      <div class="card single-point">My Stake<br><span>14,320 LTH</span></div>
+      <div class="card single-point">Storage<br><span>250 GB</span></div>
+    </div>
+
+    <h2>Graphs</h2>
+    <div class="grid-graphs">
+      <div class="card"><canvas id="earningsChart"></canvas></div>
+      <div class="card"><canvas id="requestsChart"></canvas></div>
+      <div class="card"><canvas id="cpuChart"></canvas></div>
+      <div class="card"><canvas id="memoryChart"></canvas></div>
+      <div class="card"><canvas id="tpsChart"></canvas></div>
+      <div class="card"><canvas id="stakeChart"></canvas></div>
+      <div class="card"><canvas id="difficultyChart"></canvas></div>
+      <div class="card"><canvas id="runnerChart"></canvas></div>
+    </div>
+
+    <h2>My Blocks</h2>
+    <div class="grid">
+      <div class="card">
+        <strong>Miniblocks</strong>
+        <ul class="link-list">
+          <li><a href="#">Miniblock #1001</a></li>
+          <li><a href="#">Miniblock #1002</a></li>
+        </ul>
+      </div>
+      <div class="card">
+        <strong>Blocks</strong>
+        <ul class="link-list">
+          <li><a href="#">Block #500</a></li>
+          <li><a href="#">Block #501</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function makeLineChart(id, label, data) {
+      new Chart(document.getElementById(id), {
+        type: 'line',
+        data: {
+          labels: Array(data.length).fill().map((_, i) => `T-${i}`),
+          datasets: [{ label, data, fill: true, borderColor: 'rgba(14, 165, 233, 0.8)' }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    makeLineChart('earningsChart', 'Earnings', [100, 120, 130, 125, 140, 160]);
+    makeLineChart('requestsChart', 'Requests/sec', [20, 22, 25, 21, 30, 28]);
+    makeLineChart('cpuChart', 'CPU %', [20, 25, 30, 28, 40, 35]);
+    makeLineChart('memoryChart', 'Memory %', [45, 50, 48, 60, 65, 70]);
+    makeLineChart('tpsChart', 'TPS', [5, 6, 7, 6, 9, 10]);
+    makeLineChart('stakeChart', 'Required Stake', [1000, 1200, 1500, 1400, 1600, 1800]);
+    makeLineChart('difficultyChart', 'Difficulty', [1.2, 1.4, 1.3, 1.6, 1.8, 2.0]);
+    makeLineChart('runnerChart', 'Runner Count', [10, 12, 15, 14, 18, 20]);
+  </script>
+</body>
+</html>

@@ -257,9 +257,6 @@ const setupTokenInputBox = (inputId: string, swapElement: ISwappingPair, otherIn
     });
 }
 
-const getOtherToken = (token: string) => {
-    return Object.values(swappingPair).find((x) => x.symbol != token) || swappingPair[1];
-}
 const token1Input = document.getElementById('token1-input') as HTMLInputElement;
 const token2Input = document.getElementById('token2-input') as HTMLInputElement;
 
