@@ -217,7 +217,7 @@ token2Input?.addEventListener('input', updateAvailableUsdt);
 
 const flipBox = document.getElementById('flip-box');
 
-flipBox?.addEventListener('click', () => {
+const updateFlipBox = () => {
     console.log('Flip box clicked');
     const elementList = document.getElementById('swap-box');
     if (elementList) {
@@ -246,7 +246,9 @@ flipBox?.addEventListener('click', () => {
         swappingPair[2] = tmpSwap;
         console.log('Swapping pair after flip:', swappingPair);
     }
-});
+};
+
+flipBox?.addEventListener('click', updateFlipBox);
 
 // ****** SLIPPAGE DROPDWON ******* //
 
