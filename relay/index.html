@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/relay.css" />
+  <!-- <link rel="stylesheet" href="../src/style.css" /> -->
+  <title>Vite + TS</title>
+</head>
+
+<body>
+
+<div id="overlay" class="popup-bg dark-bg">
+    <button class="connect-wallet-btn" id="open-connect-modal">CONNECT WALLET</button>
+  </div>
+  <div class="container relay-container">
+    <div class="box">
+      <div class="boxes">
+        <div class="currency-box">
+          <div class="first-content">
+            <p class="paid">Enter RELAY address:</p>
+            <input class="amount" name="relay-address" id="relay-address" />
+          </div>
+        </div>
+      </div>
+      <button class="swap-btn" id="set-relay-address-btn">Set RELAY Address</button>
+    </div>
+
+  </div>
+</body>
+
+<script type="module" src="/src/relay.ts"></script>
+
+</html>

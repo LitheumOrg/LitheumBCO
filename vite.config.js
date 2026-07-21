@@ -27,6 +27,9 @@ function routeRewriter() {
         } else if (url === '/runner') {
           // runner.litheum.com
           req.url = '/runner/index.html';
+        } else if (url === '/relay') {
+          // relay.litheum.com
+          req.url = '/relay/index.html';
         }
         next();
       });
@@ -46,6 +49,7 @@ export default defineConfig({
         dex: resolve(__dirname, 'dex/index.html'),
         pool: resolve(__dirname, 'pool/index.html'),
         runner: resolve(__dirname, 'runner/index.html'),
+        relay: resolve(__dirname, 'relay/index.html'),
         // contact: resolve(__dirname, 'contact.html'),
       },
     },
